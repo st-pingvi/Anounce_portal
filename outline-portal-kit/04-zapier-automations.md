@@ -1,6 +1,6 @@
 # Автоматизации Zapier
 
-## Zap 1. Intake -> Airtable normalization
+## Zap 1. Intake -> Airtable normalization and rule enforcement
 
 Триггер:
 
@@ -10,8 +10,10 @@
 
 1. Formatter by Zapier — нормализация даты и времени.
 2. Filter — пропускать только записи с обязательными полями.
-3. OpenAI by Zapier — сгенерировать короткий анонс.
-4. Airtable Update Record — записать `Short Announcement`, `Needs Editorial Review`, `Publish Status=Черновик`.
+3. Formatter — собрать шаблонный текст по формуле:
+   `{Название} {Дата} в {Место}. {Для кого}: {Описание}. {Участие}. #МосковскоеДолголетие`
+4. AI action — улучшить шаблон без превышения 200 символов.
+5. Airtable Update Record — записать `Short Announcement`, `Social Post Text`, `Needs Editorial Review`, `Publish Status=Черновик`, `Approval Status=Ожидает одобрения`.
 
 ### Prompt для OpenAI
 
@@ -21,6 +23,7 @@
 Тон: живой, ясный, без канцелярита.
 Не придумывай факты, которых нет.
 Обязательно упомяни формат, пользу и аудиторию, если это есть во входе.
+Сохрани практический формат для VK/Telegram.
 Верни только готовый текст без кавычек.
 ```
 
@@ -33,11 +36,12 @@
 - краткое описание;
 - аудитория.
 
-## Zap 2. Event ready -> Canva poster
+## Zap 2. Moderation approved -> poster generation
 
 Триггер:
 
-- в Airtable `Publish Status` изменился на `Готово к публикации`.
+- в Airtable `Approval Status=Одобрено`
+- и `Publish Status=Готово к публикации`.
 
 Шаги:
 
@@ -50,11 +54,22 @@
    - площадку;
    - район;
    - короткий анонс.
+   Параметры дизайна:
+   - размер `1080x1920`;
+   - шрифт `Circe Bold/Extra Bold`;
+   - палитра: изумрудный, бирюзовый `RGB 46/179/152`, рубиновый, красный, белый;
+   - фон без визуального шума;
+   - крупный заголовок и дата.
 3. Получить share/export URL.
 4. Записать в Airtable:
    - `Poster URL`;
    - `Canva Design URL`;
+   - `Poster PNG 1080x1920 URL`;
    - `Poster Status=Готова`.
+
+Альтернатива:
+
+- Python Pillow microservice по бренд-шаблону.
 
 ## Zap 3. Airtable -> Outline publish/update
 
@@ -74,8 +89,9 @@
    - `Outline Doc URL`
    - `Outline Doc ID`
    - `Publish Status=Опубликовано`
-   - `Last Published At=now`
+    - `Last Published At=now`
 5. Создать запись в `Publication Log`.
+6. Создать запись в `Channel Deliveries` по каналу `Outline`.
 
 ### Рекомендуемое API-действие
 
@@ -101,8 +117,36 @@
    - ссылку на регистрацию;
    - ссылку на карточку в Outline.
 3. URL события вернуть в Airtable поле `Google Calendar Event URL`.
+4. Обновить `Channel Deliveries`.
 
-## Zap 5. Daily digest for editors
+## Zap 5. Outline/Airtable -> VK and Telegram
+
+Триггер:
+
+- событие переведено в `Опубликовано`.
+
+Шаги:
+
+1. Подготовить текст из `Social Post Text`.
+2. Приложить `Poster PNG 1080x1920 URL`.
+3. Отправить публикацию в VK.
+4. Отправить публикацию в Telegram bot/channel.
+5. Записать `VK Post URL`, `Telegram Post URL`.
+6. Обновить `Channel Deliveries`.
+
+## Zap 6. Export -> after55.moscow
+
+Триггер:
+
+- событие опубликовано и отмечено для внешней дистрибуции.
+
+Шаги:
+
+1. Сформировать payload.
+2. Отправить webhook или CSV/API export в `after55.moscow`.
+3. Зафиксировать `after55 Export Status`.
+
+## Zap 7. Daily digest for editors
 
 Триггер:
 
@@ -117,7 +161,23 @@
 2. Formatter — сводка.
 3. Отправить письмо или сообщение в Telegram/Slack редакторам.
 
-## Zap 6. Archive past events
+## Zap 8. Post-event update reminder
+
+Триггер:
+
+- через 6 часов после окончания события.
+
+Шаги:
+
+1. Найти инициатора.
+2. Отправить ему ссылку на пост-ивент обновление.
+3. Напомнить заполнить:
+   - фото;
+   - посещаемость;
+   - отзывы;
+   - ссылку на отчет.
+
+## Zap 9. Archive past events
 
 Триггер:
 
@@ -126,5 +186,8 @@
 Шаги:
 
 1. Найти события, у которых `End Datetime < now - 1 day`.
-2. Обновить `Publish Status=Архив`.
+2. Если пост-ивент заполнен:
+   - обновить `Publish Status=Завершено`.
+3. Если период архивации прошел:
+   - обновить `Publish Status=Архив`.
 3. При необходимости переместить документ в архивный раздел Outline через API.

@@ -14,6 +14,7 @@
 - `Каталог событий`
 - `Афиша месяца`
 - `Календарь`
+- `Пост-ивент`
 - `Редакция`
 - `Шаблоны`
 
@@ -24,6 +25,7 @@
 - главная страница из [06-content/homepage.md](/Users/johndoe/Documents/Codex/outline-portal-kit/06-content/homepage.md)
 - редакционный регламент из [06-content/editorial-playbook.md](/Users/johndoe/Documents/Codex/outline-portal-kit/06-content/editorial-playbook.md)
 - шаблоны из каталога [05-outline-templates](/Users/johndoe/Documents/Codex/outline-portal-kit/05-outline-templates)
+- карта соответствия ТЗ из [09-technical-requirements-mapping.md](/Users/johndoe/Documents/Codex/outline-portal-kit/09-technical-requirements-mapping.md)
 
 ## 4. Настроить template documents
 
@@ -45,6 +47,7 @@
 - `Districts`
 - `Poster Tasks`
 - `Publication Log`
+- `Channel Deliveries`
 
 ## 6. Создать форму подачи
 
@@ -52,6 +55,16 @@
 
 - Airtable Form по таблице `Events`
 - embed формы на странице `Подать событие`
+
+Обязательные поля формы:
+
+- дата и время;
+- название;
+- место проведения;
+- формат;
+- описание;
+- для кого;
+- кто внес.
 
 ## 7. Настроить Zapier
 
@@ -62,6 +75,9 @@
 - Canva poster generation;
 - Outline publish/update;
 - Google Calendar sync;
+- VK/Telegram publishing;
+- after55 export;
+- post-event reminder;
 - daily editorial digest.
 
 ## 8. Подключить Google Calendar
@@ -91,6 +107,14 @@
 - district
 - short_announcement
 
+Требования к шаблону:
+
+- размер `1080x1920`;
+- Circe Bold/Extra Bold;
+- цвета брендбука;
+- крупный заголовок и дата;
+- без визуального шума.
+
 ## 10. Подключить Outline API
 
 Нужно:
@@ -99,7 +123,22 @@
 - разрешить операции с документами и коллекциями;
 - использовать key в Zapier Webhooks или в Outline app action.
 
-## 11. Заполнить первые 10 событий
+## 11. Подключить внешние интеграции
+
+- Yandex Maps для адресов площадок;
+- VK для соцпостов;
+- Telegram bot/channel;
+- after55.moscow для экспорта;
+- SSO или mos.ru для авторизации production-слоя.
+
+## 12. Настроить модерацию
+
+- инициатор создает событие;
+- редактор проверяет текст;
+- модератор одобряет выпуск;
+- без одобрения карточка не публикуется.
+
+## 13. Заполнить первые 10 событий
 
 Рекомендуется начать с пилотного наполнения:
 
@@ -108,7 +147,15 @@
 - 2 цифровых;
 - 2 межпоколенческих.
 
-## 12. После получения брендбука
+## 14. Настроить пост-ивент процесс
+
+- фото после события;
+- посещаемость;
+- отзывы;
+- ссылка на отчет;
+- перевод в статус `Завершено`.
+
+## 15. После получения брендбука
 
 Обязательно обновить:
 
