@@ -1,39 +1,6 @@
-name: outline-prod
+name: outline-ip
 
 services:
-  traefik:
-    image: traefik:v3.1.2
-    container_name: outline-traefik
-    restart: unless-stopped
-    command:
-      - --api.dashboard=false
-      - --accesslog=true
-      - --log.level=INFO
-      - --ping=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --providers.file.directory=/etc/traefik/dynamic
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/dynamic:/etc/traefik/dynamic:ro
-      - traefik_letsencrypt:/letsencrypt
-    healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    networks:
-      - proxy
-
   postgres:
     image: postgres:16.4
     container_name: outline-postgres
@@ -135,21 +102,14 @@ services:
       - authentik_media:/media
       - authentik_custom_templates:/templates
       - authentik_certs:/certs
+    ports:
+      - "9000:9000"
     healthcheck:
       test: ["CMD", "ak", "healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 10
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.authentik.rule=Host(`${DOMAIN_AUTH}`)
-      - traefik.http.routers.authentik.entrypoints=websecure
-      - traefik.http.routers.authentik.tls=true
-      - traefik.http.routers.authentik.tls.certresolver=letsencrypt
-      - traefik.http.routers.authentik.middlewares=security-headers@file
-      - traefik.http.services.authentik.loadbalancer.server.port=9000
     networks:
-      - proxy
       - internal
 
   authentik-worker:
@@ -225,8 +185,8 @@ services:
         condition: service_healthy
       minio-init:
         condition: service_completed_successfully
-      authentik-server:
-        condition: service_healthy
+    ports:
+      - "3000:3000"
     healthcheck:
       test:
         - CMD
@@ -239,21 +199,10 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.outline.rule=Host(`${DOMAIN_OUTLINE}`)
-      - traefik.http.routers.outline.entrypoints=websecure
-      - traefik.http.routers.outline.tls=true
-      - traefik.http.routers.outline.tls.certresolver=letsencrypt
-      - traefik.http.routers.outline.middlewares=security-headers@file
-      - traefik.http.services.outline.loadbalancer.server.port=3000
     networks:
-      - proxy
       - internal
 
 volumes:
-  traefik_letsencrypt:
-    name: outline_traefik_letsencrypt
   postgres_data:
     name: outline_postgres_data
   redis_data:
@@ -268,8 +217,6 @@ volumes:
     name: outline_authentik_certs
 
 networks:
-  proxy:
-    name: proxy
   internal:
     name: internal
     internal: true
