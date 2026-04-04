@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-MINIO_MC_IMAGE="minio/mc:RELEASE.2024-07-16T23-46-41Z"
+MINIO_MC_IMAGE="minio/mc:latest"
 
 cd "${REPO_DIR}"
 
@@ -35,7 +35,7 @@ echo "Authentik HTTPS reachable: https://${DOMAIN_AUTH}"
 echo
 
 echo "== Health checks =="
-docker compose --env-file .env exec -T minio sh -ec 'wget -q -O /dev/null http://127.0.0.1:9000/minio/health/live'
+docker compose --env-file .env exec -T minio sh -ec 'mc alias set local http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" >/dev/null 2>&1 && mc ready local >/dev/null 2>&1'
 docker compose --env-file .env exec -T authentik-server ak healthcheck
 docker compose --env-file .env exec -T outline node -e 'require("http").get("http://127.0.0.1:3000/", (res) => process.exit(res.statusCode < 500 ? 0 : 1)).on("error", () => process.exit(1))'
 echo "Container health endpoints responded."
