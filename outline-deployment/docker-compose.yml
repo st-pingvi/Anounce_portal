@@ -1,0 +1,275 @@
+name: outline-prod
+
+services:
+  traefik:
+    image: traefik:v3.1.2
+    container_name: outline-traefik
+    restart: unless-stopped
+    command:
+      - --api.dashboard=false
+      - --accesslog=true
+      - --log.level=INFO
+      - --ping=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - traefik_letsencrypt:/letsencrypt
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - proxy
+
+  postgres:
+    image: postgres:16.4
+    container_name: outline-postgres
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_SUPERUSER}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_SUPERUSER} -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  redis:
+    image: redis:7.2.5-alpine
+    container_name: outline-redis
+    restart: unless-stopped
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  minio:
+    image: minio/minio:${MINIO_VERSION}
+    container_name: outline-minio
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:9000/minio/health/live || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - internal
+
+  minio-init:
+    image: minio/mc:${MINIO_VERSION}
+    container_name: outline-minio-init
+    restart: "no"
+    env_file:
+      - ./.env
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"
+        mc mb --ignore-existing "local/$${S3_BUCKET_NAME}"
+        mc anonymous set none "local/$${S3_BUCKET_NAME}"
+    networks:
+      - internal
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_VERSION}
+    container_name: outline-authentik-server
+    restart: unless-stopped
+    command: server
+    env_file:
+      - ./.env
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: ${AUTHENTIK_ERROR_REPORTING}
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__PORT: 5432
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASSWORD}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__PORT: 6379
+      AUTHENTIK_BOOTSTRAP_EMAIL: ${AUTHENTIK_BOOTSTRAP_EMAIL}
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - authentik_media:/media
+      - authentik_custom_templates:/templates
+      - authentik_certs:/certs
+    healthcheck:
+      test: ["CMD", "ak", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.authentik.rule=Host(`${DOMAIN_AUTH}`)
+      - traefik.http.routers.authentik.entrypoints=websecure
+      - traefik.http.routers.authentik.tls=true
+      - traefik.http.routers.authentik.tls.certresolver=letsencrypt
+      - traefik.http.routers.authentik.middlewares=security-headers@file
+      - traefik.http.services.authentik.loadbalancer.server.port=9000
+    networks:
+      - proxy
+      - internal
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_VERSION}
+    container_name: outline-authentik-worker
+    restart: unless-stopped
+    command: worker
+    env_file:
+      - ./.env
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: ${AUTHENTIK_ERROR_REPORTING}
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__PORT: 5432
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_DB_NAME}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_DB_USER}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_DB_PASSWORD}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__PORT: 6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - authentik_media:/media
+      - authentik_custom_templates:/templates
+      - authentik_certs:/certs
+    healthcheck:
+      test: ["CMD", "ak", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - internal
+
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:${OUTLINE_VERSION}
+    container_name: outline-app
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: production
+      PORT: ${OUTLINE_PORT}
+      URL: ${OUTLINE_URL}
+      FORCE_HTTPS: ${OUTLINE_FORCE_HTTPS}
+      SECRET_KEY: ${OUTLINE_SECRET_KEY}
+      UTILS_SECRET: ${OUTLINE_UTILS_SECRET}
+      DATABASE_URL: postgres://${OUTLINE_DB_USER}:${OUTLINE_DB_PASSWORD}@postgres:5432/${OUTLINE_DB_NAME}
+      REDIS_URL: ${REDIS_URL}
+      FILE_STORAGE: s3
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${S3_REGION}
+      AWS_S3_UPLOAD_BUCKET_NAME: ${S3_BUCKET_NAME}
+      AWS_S3_UPLOAD_BUCKET_URL: ${AWS_S3_UPLOAD_BUCKET_URL}
+      AWS_S3_UPLOAD_MAX_SIZE: ${AWS_S3_UPLOAD_MAX_SIZE}
+      AWS_S3_FORCE_PATH_STYLE: ${AWS_S3_FORCE_PATH_STYLE}
+      AWS_S3_ACL: ${AWS_S3_ACL}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_AUTH_URI: ${OIDC_AUTH_URI}
+      OIDC_TOKEN_URI: ${OIDC_TOKEN_URI}
+      OIDC_USERINFO_URI: ${OIDC_USERINFO_URI}
+      OIDC_DISPLAY_NAME: ${OIDC_DISPLAY_NAME}
+      OIDC_SCOPES: ${OIDC_SCOPES}
+      OIDC_USERNAME_CLAIM: ${OIDC_USERNAME_CLAIM}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      authentik-server:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - |
+          require("http")
+            .get("http://127.0.0.1:3000/", (res) => process.exit(res.statusCode < 500 ? 0 : 1))
+            .on("error", () => process.exit(1))
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.outline.rule=Host(`${DOMAIN_OUTLINE}`)
+      - traefik.http.routers.outline.entrypoints=websecure
+      - traefik.http.routers.outline.tls=true
+      - traefik.http.routers.outline.tls.certresolver=letsencrypt
+      - traefik.http.routers.outline.middlewares=security-headers@file
+      - traefik.http.services.outline.loadbalancer.server.port=3000
+    networks:
+      - proxy
+      - internal
+
+volumes:
+  traefik_letsencrypt:
+    name: outline_traefik_letsencrypt
+  postgres_data:
+    name: outline_postgres_data
+  redis_data:
+    name: outline_redis_data
+  minio_data:
+    name: outline_minio_data
+  authentik_media:
+    name: outline_authentik_media
+  authentik_custom_templates:
+    name: outline_authentik_custom_templates
+  authentik_certs:
+    name: outline_authentik_certs
+
+networks:
+  proxy:
+    name: proxy
+  internal:
+    name: internal
+    internal: true

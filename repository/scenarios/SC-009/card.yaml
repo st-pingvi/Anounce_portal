@@ -1,0 +1,52 @@
+scenario_id: SC-009
+title: "Цифровая грамотность без стресса"
+summary: "Спокойный практический мастер-класс по базовым цифровым действиям для аудитории серебряного возраста."
+format:
+  - workshop
+district:
+  - tinao
+  - universal
+audience:
+  - silver_age
+duration: from_90_to_120_min
+goal: "Снизить тревожность при использовании цифровых сервисов и отработать понятные действия шаг за шагом."
+expected_outcome: "Участники выполняют 2-3 полезных цифровых действия и получают памятку для самостоятельной практики."
+participants_min: 8
+participants_max: 18
+space_requirements: "Тихий класс с хорошим светом, Wi-Fi и возможностью индивидуальной помощи."
+resources:
+  - wifi
+  - printed_manuals
+  - assistants
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - цифровая грамотность
+  - серебряный возраст
+  - сервисы
+adaptation_notes: "Содержательный модуль можно менять под конкретные цифровые запросы площадки."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 5
+  host_clarity: 5
+  replicability: 4
+  district_adaptability: 5
+  engagement: 4
+  resource_accessibility: 4
+  practice_validation: 4
+  topic_relevance: 5
+  quality_score_total: 4.5
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: true
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

@@ -1,0 +1,9 @@
+.env
+backups/
+data/
+*.sql
+*.tar
+*.tar.gz
+secrets/
+.DS_Store
+

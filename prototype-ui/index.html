@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Репозиторий ГОС 2.0</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-bg"></div>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="brand-mark">ГОС</div>
+          <div class="brand-block">
+            <p class="eyebrow">Корпоративный каталог сети</p>
+            <h1>Репозиторий ГОС 2.0</h1>
+            <p class="brand-copy">
+              Единая витрина сценариев для сети центров: подбор, адаптация, качество
+              и история версий в одном интерфейсе.
+            </p>
+          </div>
+        </div>
+
+        <nav class="nav-block" aria-label="Основная навигация">
+          <button class="nav-link active" type="button" data-view="catalog">Каталог</button>
+          <button class="nav-link" type="button" data-view="selection">Подбор</button>
+          <button class="nav-link" type="button" data-view="pilot">Пилот</button>
+          <button class="nav-link" type="button" data-view="scaling">Тиражирование</button>
+          <button class="nav-link" type="button" data-view="standards">Стандарты</button>
+        </nav>
+
+        <section class="filter-block">
+          <div class="filter-head">
+            <div>
+              <p class="eyebrow">Уточнение выдачи</p>
+              <h2>Фильтры</h2>
+            </div>
+            <button id="resetFilters" class="ghost-button" type="button">Сбросить</button>
+          </div>
+
+          <div class="filter-grid">
+            <label class="filter-group">
+              <span>Формат</span>
+              <select id="formatFilter">
+                <option value="all">Все форматы</option>
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Район</span>
+              <select id="districtFilter">
+                <option value="all">Все районы</option>
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Аудитория</span>
+              <select id="audienceFilter">
+                <option value="all">Все аудитории</option>
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Длительность</span>
+              <select id="durationFilter">
+                <option value="all">Любая</option>
+              </select>
+            </label>
+
+          </div>
+
+          <div class="quick-tags" id="quickTags" aria-label="Быстрые темы"></div>
+        </section>
+      </aside>
+
+      <main class="main-panel">
+        <section class="top-search-panel">
+          <div class="top-search-copy">
+            <p class="eyebrow">Быстрый доступ</p>
+            <h2>Поиск по репозиторию</h2>
+          </div>
+          <label class="top-search-field">
+            <span class="sr-only">Поиск сценария</span>
+            <input
+              id="searchFilter"
+              type="search"
+              placeholder="Название, тема, тег, цель сценария или риск-фактор"
+            />
+          </label>
+        </section>
+
+        <header class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Демо-интерфейс</p>
+            <h2>Лучшие сценарии сети в прозрачной и управляемой выдаче</h2>
+            <p>
+              Концепт экрана опирается на корпоративный UX: четкая иерархия, спокойная
+              палитра, рабочие фильтры и акцент на качестве контента, а не на декоративности.
+            </p>
+          </div>
+
+          <div class="hero-metrics">
+            <div class="metric-card accent">
+              <span class="metric-value" id="totalScenarioCount">10</span>
+              <span class="metric-label">сценариев в локальном контуре</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value" id="visibleScenarioCount">10</span>
+              <span class="metric-label">видно по текущим фильтрам</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">4</span>
+              <span class="metric-label">основные оси каталога</span>
+            </div>
+          </div>
+        </header>
+
+        <section class="toolbar">
+          <div class="toolbar-copy">
+            <p class="eyebrow">Результаты</p>
+            <h3>Подбор сценариев и prompt</h3>
+          </div>
+          <div class="toolbar-state">
+            <span class="result-badge" id="resultBadge">10 результатов</span>
+            <div class="active-filters" id="activeFilters"></div>
+          </div>
+        </section>
+
+        <section class="prompt-panel">
+          <div class="prompt-panel-head">
+            <div>
+              <p class="eyebrow">Готовый выход</p>
+              <h3>Собранный prompt</h3>
+            </div>
+            <div class="prompt-actions">
+              <button id="regeneratePrompt" class="secondary-button" type="button">Обновить prompt</button>
+              <button id="copyPrompt" class="primary-button" type="button">Скопировать</button>
+            </div>
+          </div>
+          <textarea id="promptOutput" class="prompt-output" spellcheck="false" readonly></textarea>
+        </section>
+
+        <section id="localMessage" class="local-message" hidden></section>
+
+        <section class="content-grid">
+          <section class="results-panel">
+            <div id="scenarioList" class="scenario-list"></div>
+          </section>
+
+          <section class="detail-panel">
+            <div id="detailCard" class="detail-card"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

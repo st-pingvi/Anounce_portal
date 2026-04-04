@@ -1,0 +1,8 @@
+durations:
+  - under_30_min
+  - from_30_to_60_min
+  - from_60_to_90_min
+  - from_90_to_120_min
+  - from_2_to_3_hours
+  - series
+  - full_day

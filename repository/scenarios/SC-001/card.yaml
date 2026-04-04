@@ -1,0 +1,56 @@
+scenario_id: SC-001
+title: "Городские мифы района"
+summary: "Интерактивная встреча о локальной истории района с обсуждением и мини-квизом."
+format:
+  - discussion
+  - game
+district:
+  - universal
+  - svao
+audience:
+  - youth_18_35
+  - students
+duration: from_60_to_90_min
+goal: "Вовлечь аудиторию в локальную историю и городскую идентичность через обсуждение и игровые механики."
+expected_outcome: "Участники узнают 5-7 локальных сюжетов района и формируют собственную карту мифов и фактов."
+participants_min: 15
+participants_max: 40
+space_requirements: "Зал с экраном, посадка полукругом, место для командной работы."
+resources:
+  - projector
+  - presentation
+  - printed_quiz_cards
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: piloted
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - район
+  - локальная история
+  - мифы
+  - квиз
+adaptation_notes: "Локальный блок легко заменяется на районные сюжеты конкретной площадки."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 4
+  resource_accessibility: 4
+  practice_validation: 4
+  topic_relevance: 4
+  quality_score_total: 4.3
+  piloted: true
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: false
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use:
+  - "Пилот в сетевой площадке, март 2026"

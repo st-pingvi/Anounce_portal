@@ -1,0 +1,88 @@
+scenario_id: SC-012
+title: "Бабушка + внук"
+summary: "Интергенерационный формат для сегмента нянечек с совместными активностями для детей 3-7 лет."
+topic: family_leisure
+format:
+  - workshop
+district:
+  - universal
+location_profile: workshop_room
+audience:
+  - families
+audience_segments:
+  - nannies_with_grandkids_3_7
+duration: from_60_to_90_min
+goal: emotional_exchange
+expected_outcome: "Бабушка и внук проходят совместные задания и создают общий артефакт встречи."
+participants_min: 8
+participants_max: 20
+declared_participants: 16
+space_requirements: "Небольшой безопасный зал с материалами для творчества и мелкой моторики."
+resources:
+  - origami_paper
+  - beads
+  - glue
+partners: []
+acquisition_channels:
+  - word_of_mouth
+  - local_announcements
+feedback_channel: "форма обратной связи центра"
+castdev_confirmed: true
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: draft
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - бабушка
+  - внук
+  - нянечки
+adaptation_notes: "Можно менять активность между оригами, языками и упражнениями на мелкую моторику."
+attachments:
+  - brief.md
+  - changelog.md
+content_validation:
+  participant_request_confirmed: true
+  format_matches_location: true
+  audience_level_fit: true
+  inclusive_access: true
+  competes_for_time_successfully: true
+  copyright_cleared: true
+  psychological_safety_ok: true
+  space_capacity_ok: true
+  resource_capacity_ok: true
+  acquisition_channels_known: true
+  copyright_license_confirmed: true
+  exclusive_label_blocked: true
+  instant_warnings: []
+  red_flags: []
+  validation_status: approved
+  validation_comment: "Добавлены совместные блоки по правилу GL-02."
+generation_rules:
+  auto_structure_profile: intergenerational_workshop
+  timeline_template: daytime_mixed
+  mandatory_blocks:
+    - intergenerational_activity
+  adaptation_rules:
+    - origami
+    - languages
+    - fine_motor_skills
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 5
+  resource_accessibility: 4
+  practice_validation: 3
+  topic_relevance: 5
+  quality_score_total: 4.4
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: false
+version: 0.9.0
+updated_at: 2026-03-20
+history_of_use: []

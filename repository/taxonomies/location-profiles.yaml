@@ -1,0 +1,8 @@
+location_profiles:
+  - assembly_hall
+  - workshop_room
+  - kitchen
+  - sports_hall
+  - classroom
+  - open_space
+  - flagship_center

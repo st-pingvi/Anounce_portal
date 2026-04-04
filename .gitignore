@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+deploy/outline/docker.env
+deploy/outline/.env
+deploy/outline/data/

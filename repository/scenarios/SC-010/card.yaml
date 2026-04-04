@@ -1,0 +1,54 @@
+scenario_id: SC-010
+title: "Идеи для центра за 1 вечер"
+summary: "Фасилитационная сессия для сбора и приоритизации идей, которые центр может быстро превратить в программу."
+format:
+  - mixed
+district:
+  - citywide
+  - universal
+audience:
+  - youth_18_35
+  - mixed
+duration: from_2_to_3_hours
+goal: "Быстро собрать и структурировать идеи программ и активностей вокруг центра."
+expected_outcome: "Сессия дает приоритизированный банк идей и 2-3 решения для запуска в ближайший цикл."
+participants_min: 15
+participants_max: 45
+space_requirements: "Большой зал с несколькими рабочими поверхностями и возможностью перемещаться между станциями."
+resources:
+  - facilitation_canvas
+  - voting_stickers
+  - projector
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: high
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - идеи
+  - центр
+  - фасилитация
+  - программа
+adaptation_notes: "Повестка может быть собрана вокруг района, календаря центра или целевой аудитории."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 5
+  resource_accessibility: 4
+  practice_validation: 4
+  topic_relevance: 5
+  quality_score_total: 4.5
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: true
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

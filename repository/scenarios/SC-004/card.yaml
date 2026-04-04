@@ -1,0 +1,50 @@
+scenario_id: SC-004
+title: "Разговор без лекции: как слушать друг друга"
+summary: "Подростковая дискуссия о диалоге, уважении и навыке слышать позицию другого."
+format:
+  - discussion
+district:
+  - universal
+audience:
+  - teens_15_17
+duration: from_30_to_60_min
+goal: "Развить у подростков базовые навыки диалога и аргументированного общения."
+expected_outcome: "Участники пробуют 2-3 техники слушания и формируют собственные правила безопасного разговора."
+participants_min: 10
+participants_max: 30
+space_requirements: "Круговая рассадка без сцены, спокойное пространство без отвлекающих факторов."
+resources:
+  - prompt_cards
+  - timer
+resource_level: low
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - диалог
+  - подростки
+  - коммуникация
+adaptation_notes: "Вопросы для обсуждения можно адаптировать под тему центра или локальный конфликтный сюжет."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 4
+  resource_accessibility: 5
+  practice_validation: 3
+  topic_relevance: 5
+  quality_score_total: 4.4
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: false
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

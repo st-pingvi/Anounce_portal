@@ -1,0 +1,9 @@
+collection_id: mvp-test-cases
+title: "Тест-кейсы MVP Репозитория ГОС 2.0"
+description: "Набор эталонных сценариев для проверки логики конструктора и ценностного фильтра."
+test_case_ids:
+  - TC1
+  - TC2
+  - TC3
+  - TC4
+  - TC5

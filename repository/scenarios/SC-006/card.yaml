@@ -1,0 +1,52 @@
+scenario_id: SC-006
+title: "Маршрут добрых дел"
+summary: "Подростковая игра-квест о полезных действиях для района и соседского сообщества."
+format:
+  - game
+district:
+  - vao
+audience:
+  - teens_11_14
+duration: from_90_to_120_min
+goal: "Показать подросткам, что забота о районе и соседях может быть увлекательной и командной."
+expected_outcome: "Команды проходят маршрут заданий и формируют набор простых добрых дел для своего района."
+participants_min: 12
+participants_max: 36
+space_requirements: "Помещение центра плюс безопасный маршрут по ближайшей территории."
+resources:
+  - route_cards
+  - volunteer_badges
+  - checklist
+resource_level: medium
+delivery_mode: offline
+seasonality: spring_summer
+host_level: high
+status: review
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - квест
+  - волонтерство
+  - район
+  - подростки
+adaptation_notes: "Требует проверки локального маршрута и согласования безопасных точек."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 3
+  host_clarity: 3
+  replicability: 4
+  district_adaptability: 3
+  engagement: 5
+  resource_accessibility: 3
+  practice_validation: 2
+  topic_relevance: 4
+  quality_score_total: 3.4
+  piloted: false
+  scaled: false
+  needs_rework: true
+  local_adaptation_required: true
+  flagship_recommended: false
+version: 0.9.0
+updated_at: 2026-03-20
+history_of_use: []

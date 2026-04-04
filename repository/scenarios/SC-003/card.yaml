@@ -1,0 +1,54 @@
+scenario_id: SC-003
+title: "Семейная карта памяти"
+summary: "Мастер-класс, где семьи собирают карту семейных и районных историй через фотографии, предметы и короткие воспоминания."
+format:
+  - workshop
+district:
+  - yao
+  - universal
+audience:
+  - families
+duration: from_60_to_90_min
+goal: "Укрепить связь семьи с местом через обмен историями и совместное творческое действие."
+expected_outcome: "Каждая семья создает мини-карту памяти, которую можно показать на общей выставке центра."
+participants_min: 8
+participants_max: 20
+space_requirements: "Теплое пространство со столами, стеной или стендами для вывешивания работ."
+resources:
+  - paper
+  - markers
+  - printed_templates
+  - glue
+resource_level: low
+delivery_mode: offline
+seasonality: all_year
+host_level: low
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - семья
+  - память
+  - район
+  - творчество
+adaptation_notes: "Легко дополняется локальными фотоархивами и районными артефактами."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 5
+  replicability: 4
+  district_adaptability: 4
+  engagement: 4
+  resource_accessibility: 5
+  practice_validation: 3
+  topic_relevance: 4
+  quality_score_total: 4.1
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: false
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

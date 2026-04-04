@@ -1,0 +1,49 @@
+interface_id: gos20-mobile-mvp-001
+title: "Макет интерфейса MVP Репозитория ГОС 2.0"
+source_file: "/Users/johndoe/Downloads/4 этап.docx"
+updated_at: 2026-03-20
+platform: mobile_app
+screens:
+  - id: SCR-01
+    title: "Каталог сценариев"
+    purpose: "Поиск и вдохновение"
+    elements:
+      - search_bar
+      - quick_filter_tags
+      - scenario_cards
+    quick_filters:
+      - top_success
+      - with_grandkids
+      - dacha_season
+  - id: SCR-02
+    title: "Конструктор"
+    purpose: "Сборка мероприятия"
+    elements:
+      - topic_select
+      - audience_select
+      - location_select
+      - resources_checkboxes
+      - castdev_control_question
+    logic:
+      - "sports_hall blocks literature and lecture-heavy formats"
+  - id: SCR-03
+    title: "Результат"
+    purpose: "Каркас и фильтр ценностей"
+    elements:
+      - result_timeline
+      - materials_checklist
+      - warnings_block
+      - registration_bot_button
+      - navigation_miniapp_link
+warnings_examples:
+  - level: yellow
+    text: "Сценарий повторяется из года в год. Добавьте неожиданный блок для продвинутых участников."
+  - level: red
+    text: "Риск токсичности при выборе чувствительной темы без модератора."
+  - level: red
+    text: "Имитация при повторяющейся лекции без реального спроса."
+  - level: red
+    text: "Нарушение авторских прав при показе кино без лицензии."
+automation_actions:
+  - create_registration_bot
+  - open_navigation_miniapp

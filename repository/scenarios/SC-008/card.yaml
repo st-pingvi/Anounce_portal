@@ -1,0 +1,52 @@
+scenario_id: SC-008
+title: "Открытый клуб соседей"
+summary: "Регулярная клубная встреча для знакомства, обмена инициативами и сборки небольших соседских дел."
+format:
+  - club
+district:
+  - szao
+  - universal
+audience:
+  - mixed
+duration: from_60_to_90_min
+goal: "Сформировать мягкую точку входа в соседское сообщество и сетевую активность центра."
+expected_outcome: "На встрече появляются новые знакомства, идеи совместных действий и список следующих шагов клуба."
+participants_min: 15
+participants_max: 50
+space_requirements: "Открытое дружественное пространство с круговой и столовой рассадкой."
+resources:
+  - tea_station
+  - idea_board
+  - moderator_cards
+resource_level: low
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - соседи
+  - сообщество
+  - клуб
+adaptation_notes: "Повестка встречи собирается из локальных тем и активностей района."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 4
+  resource_accessibility: 5
+  practice_validation: 3
+  topic_relevance: 4
+  quality_score_total: 4.3
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: false
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

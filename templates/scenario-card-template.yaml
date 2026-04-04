@@ -1,0 +1,82 @@
+scenario_id: SC-XXX
+title: ""
+summary: ""
+topic: ""
+format: []
+district: []
+location_profile: ""
+audience: []
+audience_segments: []
+duration: ""
+goal: ""
+expected_outcome: ""
+participants_min: 0
+participants_max: 0
+declared_participants: 0
+space_requirements: ""
+resources: []
+partners: []
+acquisition_channels: []
+feedback_channel: ""
+castdev_confirmed: false
+registration_bot_link: ""
+navigation_app_link: ""
+mobile_quick_filters: []
+ui_badges: []
+materials_checklist: []
+result_timeline: []
+moderation_required: false
+resource_level: ""
+delivery_mode: offline
+seasonality: all_year
+host_level: ""
+status: draft
+owner: ""
+keywords: []
+adaptation_notes: ""
+attachments: []
+content_validation:
+  participant_request_confirmed: false
+  format_matches_location: false
+  audience_level_fit: false
+  inclusive_access: false
+  competes_for_time_successfully: false
+  copyright_cleared: false
+  psychological_safety_ok: false
+  space_capacity_ok: false
+  resource_capacity_ok: false
+  acquisition_channels_known: false
+  copyright_license_confirmed: false
+  exclusive_label_blocked: false
+  instant_warnings: []
+  red_flags: []
+  validation_status: review
+  validation_comment: ""
+generation_rules:
+  auto_structure_profile: ""
+  timeline_template: ""
+  mandatory_blocks: []
+  adaptation_rules: []
+ui_behavior:
+  mobile_priority: false
+  inspiration_card: false
+  constructor_ready: false
+  result_screen_ready: false
+quality:
+  methodical_readiness: 0
+  host_clarity: 0
+  replicability: 0
+  district_adaptability: 0
+  engagement: 0
+  resource_accessibility: 0
+  practice_validation: 0
+  topic_relevance: 0
+  quality_score_total: 0.0
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: false
+version: 0.1.0
+updated_at: YYYY-MM-DD
+history_of_use: []

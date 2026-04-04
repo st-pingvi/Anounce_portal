@@ -1,0 +1,110 @@
+scenario_id: SC-013
+title: "Нейротренировки"
+summary: "Короткий востребованный формат для продвинутой аудитории с высокой оценкой участников."
+topic: digital_literacy
+format:
+  - practicum
+district:
+  - citywide
+  - universal
+location_profile: classroom
+audience:
+  - silver_age
+audience_segments:
+  - advanced_hackers
+duration: from_30_to_60_min
+goal: emotional_exchange
+expected_outcome: "Участники пробуют нейроинструменты на продвинутом уровне без базовых объяснений."
+participants_min: 10
+participants_max: 24
+declared_participants: 18
+space_requirements: "Класс с Wi-Fi, экраном и возможностью работать со смартфонами или ноутбуками."
+resources:
+  - wifi
+  - projector
+  - ai_demo_accounts
+partners: []
+acquisition_channels:
+  - tg_channels
+  - local_community
+feedback_channel: "чат-бот после сессии"
+castdev_confirmed: true
+registration_bot_link: "https://example.org/bot/neuro"
+navigation_app_link: "https://example.org/max/neuro"
+mobile_quick_filters:
+  - top_success
+ui_badges:
+  - top_success
+  - all_cmd
+materials_checklist:
+  - Wi-Fi
+  - экран
+  - демонстрационный аккаунт
+result_timeline:
+  - "18:00-18:10 ввод и проверка уровня группы"
+  - "18:10-18:35 практика нейроинструментов"
+  - "18:35-18:55 обмен результатами"
+moderation_required: false
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: high
+status: draft
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - нейросети
+  - продвинутые
+  - цифровая грамотность
+adaptation_notes: "Нельзя упрощать до базового курса для новичков без смены целевой аудитории."
+attachments:
+  - brief.md
+  - changelog.md
+content_validation:
+  participant_request_confirmed: true
+  format_matches_location: true
+  audience_level_fit: true
+  inclusive_access: true
+  competes_for_time_successfully: true
+  copyright_cleared: true
+  psychological_safety_ok: true
+  space_capacity_ok: true
+  resource_capacity_ok: true
+  acquisition_channels_known: true
+  copyright_license_confirmed: true
+  exclusive_label_blocked: true
+  instant_warnings: []
+  red_flags: []
+  validation_status: approved
+  validation_comment: "Подходит как топовый мобильный кейс каталога."
+generation_rules:
+  auto_structure_profile: advanced_digital_session
+  timeline_template: evening_short
+  mandatory_blocks:
+    - level_check
+    - advanced_practice
+    - result_showcase
+  adaptation_rules:
+    - require_level_clarification
+ui_behavior:
+  mobile_priority: true
+  inspiration_card: true
+  constructor_ready: true
+  result_screen_ready: true
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 4
+  district_adaptability: 5
+  engagement: 5
+  resource_accessibility: 3
+  practice_validation: 4
+  topic_relevance: 5
+  quality_score_total: 4.3
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: false
+  flagship_recommended: true
+version: 0.9.0
+updated_at: 2026-03-20
+history_of_use: []

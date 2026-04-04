@@ -1,0 +1,122 @@
+scenario_id: SC-014
+title: "День граненого стакана: поход в музей Мухиной"
+summary: "Городской культурный сценарий с выездом в музей Мухиной, разговором о дизайне повседневности и рефлексией о советском предмете как культурном символе."
+topic: culture
+format:
+  - excursion
+  - discussion
+district:
+  - citywide
+  - universal
+location_profile: open_space
+audience:
+  - adults_35_plus
+  - silver_age
+audience_segments:
+  - active_members
+duration: from_2_to_3_hours
+goal: emotional_exchange
+expected_outcome: "Участники посещают музей, узнают историю граненого стакана и собирают мини-истории о знакомых предметах повседневности."
+participants_min: 12
+participants_max: 25
+declared_participants: 20
+space_requirements: "Выездной формат с точкой сбора в центре, организованным маршрутом и местом для итогового обсуждения."
+resources:
+  - museum_tickets
+  - route_sheet
+  - moderator_notes
+  - audio_headsets
+partners:
+  - invited_speakers
+acquisition_channels:
+  - tg_channels
+  - word_of_mouth
+  - local_announcements
+feedback_channel: "форма обратной связи центра после экскурсии"
+castdev_confirmed: true
+registration_bot_link: "https://example.org/bot/graneniy-stakan"
+navigation_app_link: "https://example.org/max/mukhina-route"
+mobile_quick_filters:
+  - top_success
+ui_badges:
+  - all_cmd
+  - museum_route
+materials_checklist:
+  - билеты в музей
+  - список участников
+  - маршрутный лист
+  - контакты сопровождающего
+result_timeline:
+  - "11:00-11:20 сбор группы и вводный блок в центре"
+  - "11:20-12:00 дорога и контекст о Вере Мухиной"
+  - "12:00-13:00 экскурсия в музее"
+  - "13:00-13:30 обсуждение символики граненого стакана и личных историй"
+  - "13:30-14:00 возвращение или свободное завершение маршрута"
+moderation_required: true
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: high
+status: draft
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - граненый стакан
+  - музей Мухиной
+  - предметный дизайн
+  - экскурсия
+  - городская культура
+adaptation_notes: "При недоступности музея сценарий можно перестроить в лекцию с предметной выставкой и разговором о дизайне советского быта."
+attachments:
+  - brief.md
+  - changelog.md
+content_validation:
+  participant_request_confirmed: true
+  format_matches_location: true
+  audience_level_fit: true
+  inclusive_access: true
+  competes_for_time_successfully: true
+  copyright_cleared: true
+  psychological_safety_ok: true
+  space_capacity_ok: true
+  resource_capacity_ok: true
+  acquisition_channels_known: true
+  copyright_license_confirmed: true
+  exclusive_label_blocked: true
+  instant_warnings:
+    - "Проверьте доступность маршрута и физическую нагрузку для группы."
+  red_flags: []
+  validation_status: approved
+  validation_comment: "Сценарий подходит как культурный городской выезд при подтвержденной логистике и бронировании."
+generation_rules:
+  auto_structure_profile: museum_city_route
+  timeline_template: daytime_mixed
+  mandatory_blocks:
+    - meeting_point_intro
+    - museum_visit
+    - moderated_reflection
+  adaptation_rules:
+    - require_route_confirmation
+    - require_partner_booking
+ui_behavior:
+  mobile_priority: true
+  inspiration_card: true
+  constructor_ready: true
+  result_screen_ready: true
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 3
+  district_adaptability: 3
+  engagement: 4
+  resource_accessibility: 3
+  practice_validation: 3
+  topic_relevance: 4
+  quality_score_total: 3.5
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: false
+version: 0.9.0
+updated_at: 2026-03-20
+history_of_use: []

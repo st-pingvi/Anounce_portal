@@ -1,0 +1,10 @@
+warnings:
+  - low_attendance_risk
+  - conflict_potential
+  - staff_overload
+  - format_location_mismatch
+  - ageism_risk
+  - copyright_risk
+  - repeated_scenario_warning
+  - toxicity_risk
+  - imitation_risk

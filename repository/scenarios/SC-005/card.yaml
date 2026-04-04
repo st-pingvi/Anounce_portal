@@ -1,0 +1,54 @@
+scenario_id: SC-005
+title: "Локальный герой: кто меняет район"
+summary: "Встреча с героем территории или кейсом локального лидерства, дополненная разговором с аудиторией."
+format:
+  - lecture
+  - discussion
+district:
+  - cao
+  - universal
+audience:
+  - adults_35_plus
+  - silver_age
+duration: from_60_to_90_min
+goal: "Показать реальные практики изменений района через живую историю человека или инициативы."
+expected_outcome: "Участники получают пример локального действия и набор идей для включения в жизнь центра и района."
+participants_min: 20
+participants_max: 60
+space_requirements: "Зал с посадкой театром, микрофоном и экраном."
+resources:
+  - microphone
+  - projector
+  - moderator_guide
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - локальный герой
+  - сообщество
+  - район
+adaptation_notes: "В каждом районе заменяется кейс героя и локальный блок обсуждения."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 4
+  district_adaptability: 5
+  engagement: 3
+  resource_accessibility: 4
+  practice_validation: 3
+  topic_relevance: 4
+  quality_score_total: 3.9
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: false
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

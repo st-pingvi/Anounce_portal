@@ -1,0 +1,53 @@
+scenario_id: SC-007
+title: "Медиаотряд района"
+summary: "Практикум по созданию коротких медиаисторий о районе силами подростков и студентов."
+format:
+  - practicum
+district:
+  - universal
+audience:
+  - teens_15_17
+  - students
+duration: from_2_to_3_hours
+goal: "Научить участников замечать сильные сюжеты района и превращать их в короткий медиаформат."
+expected_outcome: "Группа собирает 3-5 публикационных заготовок: пост, сторис-серию или короткое интервью."
+participants_min: 10
+participants_max: 25
+space_requirements: "Зал для групповой работы и возможность выйти на короткую съемку вокруг центра."
+resources:
+  - smartphones
+  - storyboard_templates
+  - editing_apps
+resource_level: medium
+delivery_mode: hybrid
+seasonality: all_year
+host_level: high
+status: approved
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - медиа
+  - сторителлинг
+  - район
+  - молодежь
+adaptation_notes: "Нужен локальный пул сюжетов и понятные правила публикации материалов."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 4
+  district_adaptability: 5
+  engagement: 5
+  resource_accessibility: 3
+  practice_validation: 3
+  topic_relevance: 5
+  quality_score_total: 4.1
+  piloted: false
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: true
+version: 1.0.0
+updated_at: 2026-03-20
+history_of_use: []

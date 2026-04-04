@@ -1,0 +1,56 @@
+scenario_id: SC-002
+title: "Мой первый проект для района"
+summary: "Практикум по сборке простой локальной инициативы от идеи до плана первого шага."
+format:
+  - practicum
+district:
+  - citywide
+  - universal
+audience:
+  - students
+  - youth_18_35
+duration: from_90_to_120_min
+goal: "Помочь участникам перевести районную проблему или идею в понятный проектный черновик."
+expected_outcome: "На выходе формируются 3-5 проектных мини-концепций с первым шагом реализации."
+participants_min: 12
+participants_max: 35
+space_requirements: "Зал с мобильной рассадкой, флипчартами и зоной групповой работы."
+resources:
+  - flipchart
+  - stickers
+  - projector
+  - worksheets
+resource_level: medium
+delivery_mode: offline
+seasonality: all_year
+host_level: medium
+status: piloted
+owner: "Методический центр ГОС 2.0"
+keywords:
+  - проект
+  - инициатива
+  - район
+  - фасилитация
+adaptation_notes: "Можно быстро перестроить под локальную тематику центра и актуальную городскую повестку."
+attachments:
+  - brief.md
+  - changelog.md
+quality:
+  methodical_readiness: 4
+  host_clarity: 4
+  replicability: 5
+  district_adaptability: 5
+  engagement: 4
+  resource_accessibility: 4
+  practice_validation: 4
+  topic_relevance: 5
+  quality_score_total: 4.4
+  piloted: true
+  scaled: false
+  needs_rework: false
+  local_adaptation_required: true
+  flagship_recommended: true
+version: 1.1.0
+updated_at: 2026-03-20
+history_of_use:
+  - "Пилот в сетевом центре, март 2026"

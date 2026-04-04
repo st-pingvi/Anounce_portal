@@ -1,0 +1,108 @@
+mvp_id: gos20-mvp-constructor-001
+title: "Техническое задание на MVP Репозитория ГОС 2.0"
+source_file: "/Users/johndoe/Downloads/3 этап.docx"
+updated_at: 2026-03-20
+input_fields:
+  - topic
+  - district
+  - location_profile
+  - audience
+  - audience_segments
+  - duration
+  - goal
+  - resources
+  - partners
+  - declared_participants
+  - acquisition_channels
+  - castdev_confirmed
+  - feedback_channel
+  - registration_bot_link
+  - navigation_app_link
+generation_logic:
+  - id: GL-01
+    trigger:
+      goal: traditions
+    effect:
+      auto_structure_profile: traditions_day
+      mandatory_blocks:
+        - gift_collection_all_day
+        - cooking_workshop
+        - applied_workshop_1
+        - applied_workshop_2
+        - educational_block
+        - concert
+  - id: GL-02
+    trigger:
+      audience_segment: nannies_with_grandkids_3_7
+    effect:
+      mandatory_blocks:
+        - intergenerational_activity
+      adaptation_rules:
+        - origami
+        - languages
+        - fine_motor_skills
+  - id: GL-03
+    trigger:
+      topic: digital_literacy
+    effect:
+      adaptation_rules:
+        - require_level_clarification
+  - id: GL-04
+    trigger:
+      topic: business
+      goal: monetization
+    effect:
+      adaptation_rules:
+        - replace_lecture_with_practicum
+timeline_templates:
+  - id: daytime_mixed
+    blocks:
+      - "12:00-14:00 мастер-классы"
+      - "14:00-15:00 лекция или квиз"
+value_filter_rules:
+  - id: VF-01
+    title: "Запрет имитации"
+    rule: "Блокировка лекций в пространствах, не подходящих формату."
+  - id: VF-02
+    title: "Проверка на эйджизм"
+    rule: "При цифровой теме требуется уточнение уровня группы."
+  - id: VF-03
+    title: "Запрет исключения"
+    rule: "Флагманские центры не могут проводить эксклюзивные сценарии для избранных."
+  - id: VF-04
+    title: "Авторское право"
+    rule: "Показ фильмов требует подтвержденной лицензии."
+warnings:
+  - low_attendance_risk
+  - conflict_potential
+  - staff_overload
+  - repeated_scenario_warning
+  - toxicity_risk
+  - imitation_risk
+acceptance_criteria:
+  - "Сценарий генерируется менее чем за 30 секунд."
+  - "Сохранение блокируется без подтверждения кастдева."
+  - "Красный флаг по теме business появляется мгновенно."
+  - "В сценарии есть блок обратной связи."
+  - "На экране результата доступна кнопка создания чат-бота для записи."
+test_cases:
+  - id: TC1
+    title: "Пасхальная мастерская"
+    type: positive
+    expected_result: "Сценарий строится по профилю traditions_day."
+  - id: TC2
+    title: "Бабушка + внук"
+    type: new_format
+    expected_result: "Добавляются совместные блоки для бабушки и внука."
+  - id: TC3
+    title: "Нейросети для хакеров"
+    type: adaptability
+    expected_result: "Генерируется продвинутый контент без примитивных пояснений."
+  - id: TC4
+    title: "Клуб мастеров"
+    type: paradigm_shift
+    expected_result: "Лекция автоматически меняется на практикум."
+  - id: TC5
+    title: "Глухая имитация"
+    type: red_flag
+    expected_result: "Система блокирует сценарий как несоответствующий месту."
