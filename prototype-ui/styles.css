@@ -677,6 +677,8 @@ select {
 }
 
 .icon-button {
+  position: relative;
+  z-index: 3;
   width: 42px;
   height: 42px;
   border: 0;
@@ -686,6 +688,7 @@ select {
   font-size: 1.6rem;
   line-height: 1;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .submission-form {

@@ -464,8 +464,16 @@ openSubmissionFormButton.addEventListener("click", openModal);
 closeSubmissionFormButton.addEventListener("click", closeModal);
 cancelSubmissionButton.addEventListener("click", closeModal);
 submissionForm.addEventListener("submit", createAnnouncementFromForm);
+document.querySelector(".modal-card").addEventListener("click", (event) => {
+  event.stopPropagation();
+});
 submissionModal.addEventListener("click", (event) => {
   if (event.target.dataset.closeModal === "true") {
+    closeModal();
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !submissionModal.hidden) {
     closeModal();
   }
 });
