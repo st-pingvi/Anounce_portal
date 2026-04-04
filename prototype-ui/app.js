@@ -126,6 +126,7 @@ const cancelSubmissionButton = document.querySelector("#cancelSubmission");
 const submissionModal = document.querySelector("#submissionModal");
 const submissionForm = document.querySelector("#submissionForm");
 const formStatus = document.querySelector("#formStatus");
+const successBanner = document.querySelector("#successBanner");
 const eventGrid = document.querySelector("#eventGrid");
 const detailPanel = document.querySelector("#detailPanel");
 const calendarList = document.querySelector("#calendarList");
@@ -419,8 +420,11 @@ function createAnnouncementFromForm(event) {
   state.tag = "";
   searchInput.value = "";
   submissionForm.reset();
+  successBanner.hidden = false;
+  successBanner.textContent = `Анонс "${newEvent.title}" создан и добавлен в каталог со статусом "На модерации".`;
   closeModal();
   render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 formatFilter.addEventListener("change", (event) => {
