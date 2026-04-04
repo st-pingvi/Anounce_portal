@@ -1,0 +1,109 @@
+base_name: "Московское долголетие — Анонсы"
+tables:
+  - name: Events
+    purpose: "Главная таблица событий"
+    primary_field:
+      name: Event Title
+      type: singleLineText
+    fields:
+      - { name: Event ID, type: autonumber }
+      - { name: Slug, type: formula, formula: "LOWER(SUBSTITUTE({Event Title}, ' ', '-'))" }
+      - { name: Event Title, type: singleLineText }
+      - { name: Short Announcement, type: multilineText, note: "AI-анонс до 200 символов" }
+      - { name: Full Description, type: multilineText }
+      - { name: Program Line, type: singleSelect, options: ["Здоровье", "Творчество", "Цифровая грамотность", "Спорт", "Досуг", "Семья"] }
+      - { name: Event Format, type: singleSelect, options: ["Лекция", "Мастер-класс", "Концерт", "Практикум", "Экскурсия", "Клубная встреча"] }
+      - { name: Audience, type: multipleSelects, options: ["55+", "60+", "новички", "активные участники", "с внуками"] }
+      - { name: Venue, type: linkedRecord, table: Venues }
+      - { name: District, type: linkedRecord, table: Districts }
+      - { name: Start Datetime, type: dateTime }
+      - { name: End Datetime, type: dateTime }
+      - { name: Registration URL, type: url }
+      - { name: Route URL, type: url }
+      - { name: Google Calendar Event URL, type: url }
+      - { name: Poster Status, type: singleSelect, options: ["Не создана", "В работе", "Готова", "Нужна замена"] }
+      - { name: Poster URL, type: url }
+      - { name: Canva Design URL, type: url }
+      - { name: Outline Doc URL, type: url }
+      - { name: Outline Doc ID, type: singleLineText }
+      - { name: Publish Status, type: singleSelect, options: ["Черновик", "На проверке", "Готово к публикации", "Опубликовано", "Архив"] }
+      - { name: Intake Source, type: singleSelect, options: ["Airtable Form", "Tally", "Manual", "Zapier"] }
+      - { name: Contact Name, type: singleLineText }
+      - { name: Contact Phone, type: phoneNumber }
+      - { name: Contact Email, type: email }
+      - { name: AI Prompt Version, type: singleLineText }
+      - { name: Last Published At, type: dateTime }
+      - { name: Needs Editorial Review, type: checkbox }
+  - name: Venues
+    purpose: "Справочник площадок"
+    primary_field:
+      name: Venue Name
+      type: singleLineText
+    fields:
+      - { name: Venue Name, type: singleLineText }
+      - { name: Venue Code, type: singleLineText }
+      - { name: District, type: linkedRecord, table: Districts }
+      - { name: Address, type: multilineText }
+      - { name: Capacity, type: number }
+      - { name: Accessibility Notes, type: multilineText }
+      - { name: Map URL, type: url }
+  - name: Districts
+    purpose: "Районы и административные единицы"
+    primary_field:
+      name: District Name
+      type: singleLineText
+    fields:
+      - { name: District Name, type: singleLineText }
+      - { name: AO, type: singleLineText }
+  - name: Poster Tasks
+    purpose: "Производство афиш"
+    primary_field:
+      name: Task Name
+      type: formula
+      formula: "{Event} & ' / poster'"
+    fields:
+      - { name: Event, type: linkedRecord, table: Events }
+      - { name: Canva Template ID, type: singleLineText }
+      - { name: Draft URL, type: url }
+      - { name: Export URL, type: url }
+      - { name: Status, type: singleSelect, options: ["Новая", "Собрана", "Проверена", "Загружена"] }
+  - name: Publication Log
+    purpose: "История публикаций и изменений"
+    primary_field:
+      name: Log Title
+      type: formula
+      formula: "{Event} & ' / ' & DATETIME_FORMAT({Created At}, 'YYYY-MM-DD HH:mm')"
+    fields:
+      - { name: Event, type: linkedRecord, table: Events }
+      - { name: Action, type: singleSelect, options: ["Created", "Updated", "Published", "Archived", "Poster Updated"] }
+      - { name: Source, type: singleSelect, options: ["Zapier", "Editor", "API"] }
+      - { name: Created At, type: createdTime }
+views:
+  - table: Events
+    name: "К публикации"
+    filter: "Publish Status = 'Готово к публикации'"
+  - table: Events
+    name: "Черновики с риском"
+    filter: "Needs Editorial Review = 1"
+  - table: Events
+    name: "На эту неделю"
+    filter: "Start Datetime is within next 7 days"
+  - table: Poster Tasks
+    name: "Афиши в работе"
+    filter: "Status != 'Загружена'"
+forms:
+  - name: "Подача события"
+    table: Events
+    fields:
+      - Event Title
+      - Full Description
+      - Program Line
+      - Event Format
+      - Audience
+      - Venue
+      - Start Datetime
+      - End Datetime
+      - Registration URL
+      - Contact Name
+      - Contact Phone
+      - Contact Email
