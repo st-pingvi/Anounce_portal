@@ -120,12 +120,27 @@ const audienceFilter = document.querySelector("#audienceFilter");
 const districtFilter = document.querySelector("#districtFilter");
 const searchInput = document.querySelector("#searchInput");
 const resetFiltersButton = document.querySelector("#resetFilters");
+const openSubmissionFormButton = document.querySelector("#openSubmissionForm");
+const closeSubmissionFormButton = document.querySelector("#closeSubmissionForm");
+const cancelSubmissionButton = document.querySelector("#cancelSubmission");
+const submissionModal = document.querySelector("#submissionModal");
+const submissionForm = document.querySelector("#submissionForm");
+const formStatus = document.querySelector("#formStatus");
 const eventGrid = document.querySelector("#eventGrid");
 const detailPanel = document.querySelector("#detailPanel");
 const calendarList = document.querySelector("#calendarList");
 const visibleCount = document.querySelector("#visibleCount");
 const resultState = document.querySelector("#resultState");
 const tagCloud = document.querySelector("#tagCloud");
+const eventDateInput = document.querySelector("#eventDateInput");
+const eventTitleInput = document.querySelector("#eventTitleInput");
+const eventVenueInput = document.querySelector("#eventVenueInput");
+const eventDistrictInput = document.querySelector("#eventDistrictInput");
+const eventFormatInput = document.querySelector("#eventFormatInput");
+const eventAudienceInput = document.querySelector("#eventAudienceInput");
+const eventDescriptionInput = document.querySelector("#eventDescriptionInput");
+const eventRegistrationInput = document.querySelector("#eventRegistrationInput");
+const eventAuthorInput = document.querySelector("#eventAuthorInput");
 
 const featuredTags = [
   "цифровая грамотность",
@@ -149,6 +164,10 @@ function uniq(values) {
 }
 
 function populateFilters() {
+  formatFilter.innerHTML = `<option value="all">Все форматы</option>`;
+  audienceFilter.innerHTML = `<option value="all">Все аудитории</option>`;
+  districtFilter.innerHTML = `<option value="all">Все районы</option>`;
+
   uniq(events.map((event) => event.format)).forEach((value) => {
     formatFilter.insertAdjacentHTML(
       "beforeend",
@@ -325,11 +344,83 @@ function renderCounters(filteredEvents) {
 
 function render() {
   const filteredEvents = getFilteredEvents();
+  populateFilters();
   renderTags();
   renderCounters(filteredEvents);
   renderCards(filteredEvents);
   renderCalendar(filteredEvents);
   renderDetail(filteredEvents);
+}
+
+function formatHumanDate(datetimeValue) {
+  const date = new Date(datetimeValue);
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function openModal() {
+  submissionModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  submissionModal.hidden = true;
+  document.body.style.overflow = "";
+  formStatus.textContent = "";
+}
+
+function createAnnouncementFromForm(event) {
+  event.preventDefault();
+
+  const title = eventTitleInput.value.trim();
+  const dateValue = eventDateInput.value;
+  const venue = eventVenueInput.value.trim();
+  const district = eventDistrictInput.value.trim();
+  const format = eventFormatInput.value;
+  const audience = eventAudienceInput.value;
+  const description = eventDescriptionInput.value.trim();
+  const registration = eventRegistrationInput.value.trim() || "Ссылка будет добавлена инициатором";
+  const author = eventAuthorInput.value.trim();
+
+  if (!title || !dateValue || !venue || !district || !format || !audience || !description || !author) {
+    formStatus.textContent = "Заполните обязательные поля формы.";
+    return;
+  }
+
+  const isoDate = new Date(dateValue).toISOString();
+  const newEvent = {
+    id: `EV-${String(events.length + 1).padStart(3, "0")}`,
+    title,
+    date: formatHumanDate(dateValue),
+    isoDate,
+    venue,
+    district,
+    format,
+    audience,
+    summary: description,
+    description,
+    tags: [format.toLowerCase(), district.toLowerCase(), "новый анонс"],
+    status: "На модерации",
+    registration,
+    postEvent: `Инициатор: ${author}. После события сюда добавляются фото, посещаемость и ссылка на отчет.`,
+    metrics: "Ожидаемая посещаемость: будет уточнена"
+  };
+
+  events.unshift(newEvent);
+  state.activeId = newEvent.id;
+  state.format = "all";
+  state.audience = "all";
+  state.district = "all";
+  state.query = "";
+  state.tag = "";
+  searchInput.value = "";
+  submissionForm.reset();
+  closeModal();
+  render();
 }
 
 formatFilter.addEventListener("change", (event) => {
@@ -365,5 +456,14 @@ resetFiltersButton.addEventListener("click", () => {
   render();
 });
 
-populateFilters();
+openSubmissionFormButton.addEventListener("click", openModal);
+closeSubmissionFormButton.addEventListener("click", closeModal);
+cancelSubmissionButton.addEventListener("click", closeModal);
+submissionForm.addEventListener("submit", createAnnouncementFromForm);
+submissionModal.addEventListener("click", (event) => {
+  if (event.target.dataset.closeModal === "true") {
+    closeModal();
+  }
+});
+
 render();

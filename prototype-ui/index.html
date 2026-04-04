@@ -101,7 +101,7 @@
             </p>
             <div class="hero-actions">
               <button class="primary-button" type="button">Открыть афишу недели</button>
-              <button class="secondary-button" type="button">Подать событие</button>
+              <button id="openSubmissionForm" class="secondary-button" type="button">Подать событие</button>
             </div>
           </div>
 
@@ -181,6 +181,113 @@
           </section>
         </section>
       </main>
+    </div>
+
+    <div id="submissionModal" class="modal-shell" hidden>
+      <div class="modal-backdrop" data-close-modal="true"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="submissionTitle">
+        <div class="section-head modal-head">
+          <div>
+            <p class="eyebrow">Создание анонса</p>
+            <h3 id="submissionTitle">Подать событие в портал</h3>
+          </div>
+          <button id="closeSubmissionForm" class="icon-button" type="button" aria-label="Закрыть">
+            ×
+          </button>
+        </div>
+
+        <form id="submissionForm" class="submission-form">
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Дата и время</span>
+              <input id="eventDateInput" name="eventDate" type="datetime-local" required />
+            </label>
+
+            <label class="form-field">
+              <span>Название</span>
+              <input id="eventTitleInput" name="eventTitle" type="text" maxlength="120" required />
+            </label>
+
+            <label class="form-field">
+              <span>Место проведения</span>
+              <input id="eventVenueInput" name="eventVenue" type="text" maxlength="140" required />
+            </label>
+
+            <label class="form-field">
+              <span>Район</span>
+              <input id="eventDistrictInput" name="eventDistrict" type="text" maxlength="80" required />
+            </label>
+
+            <label class="form-field">
+              <span>Формат</span>
+              <select id="eventFormatInput" name="eventFormat" required>
+                <option value="">Выберите формат</option>
+                <option value="Лекция">Лекция</option>
+                <option value="Мастер-класс">Мастер-класс</option>
+                <option value="Практикум">Практикум</option>
+                <option value="Спорт">Спорт</option>
+                <option value="Концерт">Концерт</option>
+                <option value="Экскурсия">Экскурсия</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Для кого</span>
+              <select id="eventAudienceInput" name="eventAudience" required>
+                <option value="">Выберите аудиторию</option>
+                <option value="Участники 55+">Участники 55+</option>
+                <option value="Семьи">Семьи</option>
+                <option value="Сотрудники">Сотрудники</option>
+                <option value="Смешанная">Смешанная</option>
+                <option value="Партнеры">Партнеры</option>
+              </select>
+            </label>
+
+            <label class="form-field form-field-wide">
+              <span>Описание</span>
+              <textarea
+                id="eventDescriptionInput"
+                name="eventDescription"
+                maxlength="200"
+                rows="4"
+                placeholder="Полное описание до 200 символов"
+                required
+              ></textarea>
+            </label>
+
+            <label class="form-field">
+              <span>Ссылка на участие</span>
+              <input
+                id="eventRegistrationInput"
+                name="eventRegistration"
+                type="text"
+                maxlength="160"
+                placeholder="Необязательно"
+              />
+            </label>
+
+            <label class="form-field">
+              <span>Кто внёс</span>
+              <input
+                id="eventAuthorInput"
+                name="eventAuthor"
+                type="text"
+                maxlength="120"
+                placeholder="ФИО, роль инициатора"
+                required
+              />
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <p id="formStatus" class="form-status" aria-live="polite"></p>
+            <div class="modal-buttons">
+              <button id="cancelSubmission" class="ghost-dark-button" type="button">Отмена</button>
+              <button class="primary-button" type="submit">Создать анонс</button>
+            </div>
+          </div>
+        </form>
+      </section>
     </div>
 
     <script src="./app.js"></script>
