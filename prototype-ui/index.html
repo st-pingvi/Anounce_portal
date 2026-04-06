@@ -67,8 +67,8 @@
           <p class="eyebrow">Правило системы</p>
           <h3>Нет анонса — нет события</h3>
           <p>
-            Каждое мероприятие проходит публикацию, модерацию, выпуск афиши и
-            попадание в календарь до старта.
+            Каждое мероприятие получает анонс, визуал, карточку и попадание в
+            календарь до старта.
           </p>
         </section>
       </aside>
@@ -174,11 +174,10 @@
               </div>
             </div>
             <ol class="flow-list">
-              <li>Инициатор заполняет форму события.</li>
-              <li>AI собирает короткий анонс до 200 символов.</li>
-              <li>Canva выпускает афишу по бренд-шаблону.</li>
-              <li>Модератор утверждает публикацию.</li>
-              <li>Карточка попадает в Outline, календарь и внешние каналы.</li>
+              <li>Сотрудник вводит 3-5 тезисов о событии.</li>
+              <li>AI собирает литературный анонс в 3 коротких абзаца.</li>
+              <li>Сразу формируется английский prompt для DALL-E или Midjourney.</li>
+              <li>Карточка мгновенно появляется в каталоге и готова к публикации.</li>
             </ol>
           </section>
         </section>
@@ -246,13 +245,13 @@
             </label>
 
             <label class="form-field form-field-wide">
-              <span>Описание</span>
+              <span>Ключевые слова / тезисы</span>
               <textarea
                 id="eventDescriptionInput"
                 name="eventDescription"
                 maxlength="200"
                 rows="4"
-                placeholder="Полное описание до 200 символов"
+                placeholder="Например: лекция, здоровье, 15 мая, бабушки, память"
                 required
               ></textarea>
             </label>
@@ -285,10 +284,27 @@
             <p id="formStatus" class="form-status" aria-live="polite"></p>
             <div class="modal-buttons">
               <button id="cancelSubmission" class="ghost-dark-button" type="button">Отмена</button>
-              <button class="primary-button" type="submit">Подать событие</button>
+              <button id="submitSubmissionButton" class="primary-button" type="submit">Подать событие</button>
             </div>
           </div>
         </form>
+      </section>
+    </div>
+
+    <div id="eventModal" class="modal-shell" hidden>
+      <div class="modal-backdrop" data-close-event-modal="true"></div>
+      <section class="modal-card event-modal-card" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+        <div class="section-head modal-head">
+          <div>
+            <p class="eyebrow">Карточка события</p>
+            <h3 id="eventModalTitle">Событие</h3>
+          </div>
+          <button id="closeEventModal" class="icon-button" type="button" aria-label="Закрыть">
+            ×
+          </button>
+        </div>
+
+        <div id="eventModalBody" class="event-modal-body"></div>
       </section>
     </div>
 

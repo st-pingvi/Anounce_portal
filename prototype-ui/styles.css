@@ -546,6 +546,13 @@ select {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(22, 88, 73, 0.08);
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.calendar-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .calendar-item strong {
@@ -676,8 +683,78 @@ select {
   box-shadow: 0 28px 80px rgba(33, 26, 31, 0.2);
 }
 
+.event-modal-card {
+  width: min(980px, 100%);
+}
+
 .modal-head {
   margin-bottom: 18px;
+}
+
+.event-modal-body {
+  display: grid;
+  gap: 18px;
+}
+
+.event-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondary-outline-button {
+  padding: 12px 16px;
+  border: 1px solid rgba(128, 0, 54, 0.16);
+  border-radius: 999px;
+  background: rgba(128, 0, 54, 0.06);
+  color: var(--ruby);
+  cursor: pointer;
+}
+
+.support-panel {
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(22, 88, 73, 0.08);
+}
+
+.support-panel h4 {
+  margin: 0 0 10px;
+  color: var(--emerald);
+}
+
+.support-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.report-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.report-link {
+  color: var(--ruby);
+  word-break: break-word;
 }
 
 .icon-button {
@@ -796,7 +873,17 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
+
   .modal-actions {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .report-actions,
+  .event-modal-actions {
     align-items: start;
     flex-direction: column;
   }
