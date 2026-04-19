@@ -2,6 +2,16 @@
 Thumbs.db
 *.tmp
 *.swp
+*.zip
+
+# Local export artifacts
+prototype-ui.zip
+kis-md-kb/
+
+# Local macOS metadata inside generated folders
+**/.DS_Store
+
+# Outline local environment and data
 deploy/outline/docker.env
 deploy/outline/.env
 deploy/outline/data/
