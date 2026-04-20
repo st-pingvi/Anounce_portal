@@ -903,6 +903,49 @@ select {
   word-break: break-word;
 }
 
+.report-preview-wrap {
+  margin-top: 16px;
+}
+
+.report-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.report-thumb {
+  margin: 0;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(22, 88, 73, 0.08);
+}
+
+.report-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.report-thumb figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.report-gallery-empty {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(22, 88, 73, 0.05);
+  color: var(--muted);
+}
+
 .icon-button {
   position: relative;
   z-index: 3;

@@ -197,6 +197,34 @@ function getEventKeywords(eventItem) {
     .join(", ");
 }
 
+function hasEventReport(eventItem) {
+  return Boolean(
+    (eventItem.reportFiles && eventItem.reportFiles.length) ||
+      (eventItem.reportPhotos && eventItem.reportPhotos.length) ||
+      eventItem.reportLink
+  );
+}
+
+function isPastEvent(eventItem) {
+  return new Date(eventItem.isoDate) < new Date();
+}
+
+function getEventStatusLabel(eventItem) {
+  if (eventItem.format === "Сервис") {
+    return eventItem.status;
+  }
+
+  if (hasEventReport(eventItem)) {
+    return "Завершено";
+  }
+
+  if (isPastEvent(eventItem)) {
+    return "Ожидает отчёт";
+  }
+
+  return eventItem.status || "Опубликовано";
+}
+
 function getSchedulableEvents() {
   return events
     .filter((eventItem) => eventItem.format !== "Сервис")
@@ -359,7 +387,7 @@ function renderCards(filteredEvents) {
     article.innerHTML = `
       <div class="event-topline">
         <span class="event-date">${event.date}</span>
-        <span class="event-pill">${event.status}</span>
+        <span class="event-pill">${getEventStatusLabel(event)}</span>
       </div>
       <h3>${event.title}</h3>
       <p class="event-summary">${event.summary}</p>
@@ -604,6 +632,27 @@ function renderPosterCard(eventItem) {
   `;
 }
 
+function renderReportGallery(reportPhotos = [], emptyText = "Превью фотоотчёта пока не добавлено.") {
+  if (!reportPhotos.length) {
+    return `<div class="report-gallery-empty">${emptyText}</div>`;
+  }
+
+  return `
+    <div class="report-gallery">
+      ${reportPhotos
+        .map(
+          (photo) => `
+            <figure class="report-thumb">
+              <img src="${photo.url}" alt="${photo.name}" />
+              <figcaption>${photo.name}</figcaption>
+            </figure>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function renderDetail(filteredEvents) {
   const current =
     filteredEvents.find((event) => event.id === state.activeId) || filteredEvents[0] || events[0];
@@ -629,6 +678,12 @@ function renderDetail(filteredEvents) {
       ${renderPosterCard(current)}
     </div>
 
+    <div class="event-modal-actions">
+      <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
+        Экспорт в PDF
+      </button>
+    </div>
+
     <div class="detail-columns">
       <div class="detail-box">
         <h4>Параметры события</h4>
@@ -636,7 +691,7 @@ function renderDetail(filteredEvents) {
           <li><strong>Дата:</strong> ${current.date}</li>
           <li><strong>Площадка:</strong> ${current.venue}</li>
           <li><strong>Запись:</strong> ${current.registration}</li>
-          <li><strong>Статус:</strong> ${current.status}</li>
+          <li><strong>Статус:</strong> ${getEventStatusLabel(current)}</li>
         </ul>
       </div>
 
@@ -648,6 +703,7 @@ function renderDetail(filteredEvents) {
           <li><strong>Файлы:</strong> ${(current.reportFiles && current.reportFiles.length) ? current.reportFiles.join(", ") : "пока не добавлены"}</li>
           <li><strong>Ссылка:</strong> ${current.reportLink || "пока не добавлена"}</li>
         </ul>
+        ${renderReportGallery(current.reportPhotos)}
       </div>
     </div>
 
@@ -668,6 +724,7 @@ function renderEventModal() {
   }
 
   const reportFiles = current.reportFiles || [];
+  const reportPhotos = current.reportPhotos || [];
   const reportLink = current.reportLink || "";
 
   eventModalTitle.textContent = current.title;
@@ -689,6 +746,9 @@ function renderEventModal() {
       <button class="primary-button" type="button" data-action="edit-event" data-event-id="${current.id}">
         Редактировать
       </button>
+      <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
+        Экспорт в PDF
+      </button>
       <button class="secondary-outline-button" type="button" data-action="toggle-report" data-event-id="${current.id}">
         Добавить отчёт по фото
       </button>
@@ -701,7 +761,7 @@ function renderEventModal() {
           <li><strong>Дата:</strong> ${current.date}</li>
           <li><strong>Площадка:</strong> ${current.venue}</li>
           <li><strong>Запись:</strong> ${current.registration}</li>
-          <li><strong>Статус:</strong> ${current.status}</li>
+          <li><strong>Статус:</strong> ${getEventStatusLabel(current)}</li>
         </ul>
       </div>
 
@@ -721,6 +781,7 @@ function renderEventModal() {
               : "<li>Ссылка на отчёт пока не добавлена.</li>"
           }
         </ul>
+        ${renderReportGallery(reportPhotos)}
       </div>
     </div>
 
@@ -743,6 +804,10 @@ function renderEventModal() {
               value="${reportLink}"
             />
           </label>
+        </div>
+
+        <div id="reportPreview" class="report-preview-wrap">
+          ${renderReportGallery(reportPhotos, "Выберите фото, чтобы увидеть превью до сохранения.")}
         </div>
 
         <div class="report-actions">
@@ -961,6 +1026,212 @@ function closeEventModal() {
   document.body.style.overflow = submissionModal.hidden ? "" : "hidden";
 }
 
+function exportEventAnnouncement(eventId) {
+  const current = getEventById(eventId);
+
+  if (!current) {
+    return;
+  }
+
+  const printWindow = window.open("", "_blank", "width=1100,height=900");
+
+  if (!printWindow) {
+    return;
+  }
+
+  const reportGallery = renderReportGallery(current.reportPhotos || [], "Фотоотчёт не добавлен.");
+  const printMarkup = `
+    <!DOCTYPE html>
+    <html lang="ru">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${current.title} — PDF export</title>
+        <style>
+          :root {
+            --emerald: #165849;
+            --turquoise: #2eb398;
+            --ruby: #800036;
+            --red: #bd536d;
+            --ink: #24312f;
+            --muted: #62706c;
+            --paper: #ffffff;
+            --rose: #f3cad5;
+          }
+
+          * { box-sizing: border-box; }
+          body {
+            margin: 0;
+            padding: 32px;
+            font-family: "Circe", "Arial", sans-serif;
+            color: var(--ink);
+            background: #fff;
+          }
+          .page {
+            max-width: 920px;
+            margin: 0 auto;
+          }
+          .hero {
+            padding: 28px;
+            border-radius: 28px;
+            background:
+              radial-gradient(circle at top right, rgba(46, 179, 152, 0.18), transparent 32%),
+              radial-gradient(circle at left bottom, rgba(189, 83, 109, 0.16), transparent 28%),
+              linear-gradient(160deg, #ffffff 0%, #f5fbf8 52%, #f9f1f4 100%);
+            border: 1px solid rgba(22, 88, 73, 0.1);
+          }
+          .brand {
+            display: inline-flex;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--ruby);
+            color: #fff;
+            font-size: 13px;
+          }
+          h1 {
+            margin: 18px 0 14px;
+            color: var(--emerald);
+            font-size: 38px;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+          }
+          .meta {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+            color: var(--ink);
+            font-size: 16px;
+          }
+          .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 22px 0 0;
+          }
+          .chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(46, 179, 152, 0.12);
+            color: var(--emerald);
+            font-size: 13px;
+          }
+          .section {
+            margin-top: 24px;
+            padding: 22px;
+            border-radius: 24px;
+            border: 1px solid rgba(22, 88, 73, 0.08);
+            background: #fff;
+          }
+          h2 {
+            margin: 0 0 14px;
+            color: var(--ruby);
+            font-size: 24px;
+          }
+          p, li {
+            font-size: 15px;
+            line-height: 1.6;
+          }
+          ul {
+            margin: 0;
+            padding-left: 18px;
+          }
+          .report-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+          }
+          .report-thumb {
+            margin: 0;
+            padding: 10px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(22, 88, 73, 0.08);
+          }
+          .report-thumb img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 12px;
+          }
+          .report-thumb figcaption {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.35;
+          }
+          .report-gallery-empty {
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(22, 88, 73, 0.05);
+            color: var(--muted);
+          }
+          .note {
+            margin-top: 24px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: var(--rose);
+            color: var(--ruby);
+          }
+          @media print {
+            body { padding: 0; }
+            .page { max-width: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <main class="page">
+          <section class="hero">
+            <span class="brand">Московское долголетие</span>
+            <h1>${current.title}</h1>
+            <div class="meta">
+              <div><strong>Дата:</strong> ${current.date}</div>
+              <div><strong>Место проведения:</strong> ${current.venue}</div>
+              <div><strong>Район:</strong> ${current.district}</div>
+              <div><strong>Участие:</strong> ${current.registration}</div>
+            </div>
+            <div class="chips">
+              <span class="chip">${current.format}</span>
+              <span class="chip">${current.audience}</span>
+              <span class="chip">${getEventStatusLabel(current)}</span>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>Анонс</h2>
+            ${current.description
+              .split("\n\n")
+              .map((paragraph) => `<p>${paragraph}</p>`)
+              .join("")}
+          </section>
+
+          <section class="section">
+            <h2>Пост-ивент</h2>
+            <ul>
+              <li>${current.postEvent}</li>
+              <li>${current.metrics}</li>
+              ${current.reportLink ? `<li>Ссылка на отчёт: ${current.reportLink}</li>` : ""}
+            </ul>
+            ${reportGallery}
+          </section>
+
+          <div class="note">Используйте системное окно печати и выберите “Сохранить как PDF”.</div>
+        </main>
+        <script>
+          window.onload = () => {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `;
+
+  printWindow.document.open();
+  printWindow.document.write(printMarkup);
+  printWindow.document.close();
+}
+
 function toggleReportPanel() {
   const reportPanel = document.querySelector("#reportPanel");
 
@@ -969,6 +1240,25 @@ function toggleReportPanel() {
   }
 
   reportPanel.hidden = !reportPanel.hidden;
+}
+
+function updateReportPreview() {
+  const reportFilesInput = document.querySelector("#reportFilesInput");
+  const reportPreview = document.querySelector("#reportPreview");
+
+  if (!reportFilesInput || !reportPreview) {
+    return;
+  }
+
+  const selectedPhotos = Array.from(reportFilesInput.files || []).map((file) => ({
+    name: file.name,
+    url: URL.createObjectURL(file)
+  }));
+
+  reportPreview.innerHTML = renderReportGallery(
+    selectedPhotos,
+    "Выберите фото, чтобы увидеть превью до сохранения."
+  );
 }
 
 function saveEventReport(event) {
@@ -983,16 +1273,19 @@ function saveEventReport(event) {
     return;
   }
 
-  const fileNames = Array.from(reportFilesInput.files || []).map((file) => file.name);
+  const selectedFiles = Array.from(reportFilesInput.files || []);
+  const fileNames = selectedFiles.map((file) => file.name);
+  const photoPreviews = selectedFiles.map((file) => ({
+    name: file.name,
+    url: URL.createObjectURL(file)
+  }));
   const reportLinkValue = reportLinkInput.value.trim();
 
   current.reportFiles = fileNames.length ? fileNames : current.reportFiles || [];
+  current.reportPhotos = photoPreviews.length ? photoPreviews : current.reportPhotos || [];
   current.reportLink = reportLinkValue || current.reportLink || "";
   current.postEvent = "Фотоотчёт и итоговые материалы добавлены в карточку события.";
-
-  if (current.reportFiles.length || current.reportLink) {
-    current.status = "Завершено";
-  }
+  current.status = hasEventReport(current) ? "Завершено" : current.status;
 
   render();
   renderEventModal();
@@ -1162,6 +1455,7 @@ eventModal.addEventListener("click", (event) => {
 });
 eventModalBody.addEventListener("click", (event) => {
   const editButton = event.target.closest('[data-action="edit-event"]');
+  const exportButton = event.target.closest('[data-action="export-event"]');
   const reportButton = event.target.closest('[data-action="toggle-report"]');
 
   if (editButton) {
@@ -1170,13 +1464,30 @@ eventModalBody.addEventListener("click", (event) => {
     return;
   }
 
+  if (exportButton) {
+    exportEventAnnouncement(exportButton.dataset.eventId);
+    return;
+  }
+
   if (reportButton) {
     toggleReportPanel();
+  }
+});
+detailPanel.addEventListener("click", (event) => {
+  const exportButton = event.target.closest('[data-action="export-event"]');
+
+  if (exportButton) {
+    exportEventAnnouncement(exportButton.dataset.eventId);
   }
 });
 eventModalBody.addEventListener("submit", (event) => {
   if (event.target.id === "reportForm") {
     saveEventReport(event);
+  }
+});
+eventModalBody.addEventListener("change", (event) => {
+  if (event.target.id === "reportFilesInput") {
+    updateReportPreview();
   }
 });
 document.addEventListener("keydown", (event) => {
