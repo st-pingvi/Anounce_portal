@@ -133,6 +133,8 @@ const districtFilter = document.querySelector("#districtFilter");
 const searchInput = document.querySelector("#searchInput");
 const resetFiltersButton = document.querySelector("#resetFilters");
 const openSubmissionFormButton = document.querySelector("#openSubmissionForm");
+const openWeekPosterButton = document.querySelector("#openWeekPoster");
+const openMonthPosterButton = document.querySelector("#openMonthPoster");
 const closeSubmissionFormButton = document.querySelector("#closeSubmissionForm");
 const cancelSubmissionButton = document.querySelector("#cancelSubmission");
 const submissionModal = document.querySelector("#submissionModal");
@@ -145,6 +147,7 @@ const calendarList = document.querySelector("#calendarList");
 const visibleCount = document.querySelector("#visibleCount");
 const resultState = document.querySelector("#resultState");
 const tagCloud = document.querySelector("#tagCloud");
+const dashboardGrid = document.querySelector(".dashboard-grid");
 const eventDateInput = document.querySelector("#eventDateInput");
 const eventTitleInput = document.querySelector("#eventTitleInput");
 const eventVenueInput = document.querySelector("#eventVenueInput");
@@ -174,6 +177,7 @@ const state = {
   district: "all",
   query: "",
   tag: "",
+  period: "all",
   activeId: events[0].id,
   editingId: null
 };
@@ -191,6 +195,77 @@ function getEventKeywords(eventItem) {
     .filter((tag) => !tag.includes("новый анонс"))
     .slice(0, 5)
     .join(", ");
+}
+
+function getSchedulableEvents() {
+  return events
+    .filter((eventItem) => eventItem.format !== "Сервис")
+    .sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+}
+
+function getDateRangeForPeriod(period) {
+  const schedulableEvents = getSchedulableEvents();
+
+  if (!schedulableEvents.length) {
+    return null;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const referenceEvent =
+    schedulableEvents.find((eventItem) => new Date(eventItem.isoDate) >= today) || schedulableEvents[0];
+  const start = new Date(referenceEvent.isoDate);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+
+  if (period === "week") {
+    end.setDate(end.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+    return { start, end };
+  }
+
+  if (period === "month") {
+    start.setDate(1);
+    end.setMonth(start.getMonth() + 1, 0);
+    end.setHours(23, 59, 59, 999);
+    return { start, end };
+  }
+
+  return null;
+}
+
+function matchesPeriod(eventItem) {
+  if (state.period === "all") {
+    return true;
+  }
+
+  if (eventItem.format === "Сервис") {
+    return false;
+  }
+
+  const range = getDateRangeForPeriod(state.period);
+
+  if (!range) {
+    return true;
+  }
+
+  const eventDate = new Date(eventItem.isoDate);
+  return eventDate >= range.start && eventDate <= range.end;
+}
+
+function syncHeroFilterButtons() {
+  openWeekPosterButton.classList.toggle("is-active", state.period === "week");
+  openMonthPosterButton.classList.toggle("is-active", state.period === "month");
+}
+
+function applyHeroPeriodFilter(period) {
+  state.period = period;
+  render();
+
+  if (dashboardGrid) {
+    dashboardGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function populateFilters() {
@@ -255,7 +330,8 @@ function matchesFilters(event) {
     (state.audience === "all" || event.audience === state.audience) &&
     (state.district === "all" || event.district === state.district) &&
     (!state.tag || event.tags.includes(state.tag)) &&
-    (!query || haystack.includes(query))
+    (!query || haystack.includes(query)) &&
+    matchesPeriod(event)
   );
 }
 
@@ -350,6 +426,184 @@ function renderCalendar(filteredEvents) {
   });
 }
 
+function renderPosterCard(eventItem) {
+  const thematicIllustrationMap = {
+    health: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="62" cy="62" r="30" fill="rgba(46, 179, 152, 0.18)"></circle>
+        <path d="M62 46V78" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M46 62H78" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M120 118C144 88 164 72 190 62" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="194" cy="60" r="16" fill="#bd536d"></circle>
+      </svg>
+    `,
+    dance: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="72" cy="46" r="18" fill="#2eb398"></circle>
+        <path d="M72 68L108 96L142 82" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M108 96L88 138" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M112 94L156 136" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M142 82L178 48" fill="none" stroke="#2eb398" stroke-width="12" stroke-linecap="round"></path>
+      </svg>
+    `,
+    digital: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <rect x="52" y="38" width="84" height="104" rx="18" fill="rgba(46, 179, 152, 0.14)"></rect>
+        <rect x="68" y="58" width="52" height="8" rx="4" fill="#165849"></rect>
+        <rect x="68" y="76" width="40" height="8" rx="4" fill="#2eb398"></rect>
+        <circle cx="94" cy="116" r="10" fill="#800036"></circle>
+        <path d="M150 62H192" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M150 94H180" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
+      </svg>
+    `,
+    family: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="72" cy="60" r="18" fill="#800036"></circle>
+        <circle cx="116" cy="74" r="14" fill="#2eb398"></circle>
+        <path d="M58 110C58 92 70 82 88 82C106 82 118 92 118 110" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M104 118C104 104 114 96 128 96C142 96 152 104 152 118" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M152 58L170 40L188 58" fill="none" stroke="#2eb398" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    `,
+    music: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <path d="M76 40V122" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="66" cy="130" r="18" fill="#bd536d"></circle>
+        <path d="M150 48V102" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="140" cy="110" r="18" fill="#2eb398"></circle>
+        <path d="M76 40C116 52 140 56 184 48" fill="none" stroke="#800036" stroke-width="10" stroke-linecap="round"></path>
+      </svg>
+    `,
+    walk: `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <path d="M42 132C72 96 102 76 140 62C164 54 182 54 198 64" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="48" cy="132" r="16" fill="#2eb398"></circle>
+        <circle cx="198" cy="64" r="16" fill="#800036"></circle>
+        <path d="M118 34L126 50L144 52L130 64L134 82L118 72L102 82L106 64L92 52L110 50Z" fill="rgba(189, 83, 109, 0.24)"></path>
+      </svg>
+    `
+  };
+
+  const illustrationMap = {
+    "Лекция": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="58" cy="54" r="28" fill="rgba(46, 179, 152, 0.18)"></circle>
+        <rect x="104" y="34" width="90" height="62" rx="14" fill="rgba(128, 0, 54, 0.12)"></rect>
+        <rect x="116" y="48" width="66" height="8" rx="4" fill="#800036"></rect>
+        <rect x="116" y="64" width="52" height="8" rx="4" fill="#2eb398"></rect>
+        <path d="M42 138L72 100L104 138" fill="none" stroke="#165849" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M124 128H194" stroke="#165849" stroke-width="10" stroke-linecap="round"></path>
+      </svg>
+    `,
+    "Мастер-класс": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="70" cy="72" r="34" fill="rgba(46, 179, 152, 0.16)"></circle>
+        <path d="M104 116C132 88 154 78 194 58" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="196" cy="56" r="16" fill="#bd536d"></circle>
+        <path d="M54 124L96 82" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M44 80L64 100" fill="none" stroke="#2eb398" stroke-width="12" stroke-linecap="round"></path>
+      </svg>
+    `,
+    "Практикум": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <rect x="40" y="34" width="72" height="96" rx="18" fill="rgba(46, 179, 152, 0.14)"></rect>
+        <rect x="58" y="56" width="36" height="8" rx="4" fill="#165849"></rect>
+        <rect x="58" y="76" width="28" height="8" rx="4" fill="#800036"></rect>
+        <rect x="58" y="96" width="22" height="8" rx="4" fill="#2eb398"></rect>
+        <path d="M146 56L194 104" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M194 56L146 104" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+      </svg>
+    `,
+    "Спорт": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="72" cy="48" r="18" fill="#2eb398"></circle>
+        <path d="M70 70L102 96L134 78" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M102 96L88 138" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M106 96L146 140" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="182" cy="120" r="22" fill="rgba(128, 0, 54, 0.14)"></circle>
+      </svg>
+    `,
+    "Концерт": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <path d="M74 42V122" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="64" cy="130" r="18" fill="#bd536d"></circle>
+        <path d="M146 42V98" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="136" cy="106" r="18" fill="#2eb398"></circle>
+        <path d="M74 42C112 54 134 58 174 52" fill="none" stroke="#800036" stroke-width="10" stroke-linecap="round"></path>
+      </svg>
+    `,
+    "Экскурсия": `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <path d="M48 132C74 96 98 74 136 60C162 50 182 52 198 64" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+        <circle cx="54" cy="132" r="16" fill="#2eb398"></circle>
+        <circle cx="198" cy="64" r="16" fill="#800036"></circle>
+        <path d="M120 38L132 62L158 66L138 84L144 110L120 96L96 110L102 84L82 66L108 62Z" fill="rgba(189, 83, 109, 0.22)"></path>
+      </svg>
+    `
+  };
+
+  const illustrationHints = [
+    eventItem.title,
+    eventItem.summary,
+    eventItem.description,
+    eventItem.format,
+    ...(eventItem.tags || [])
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  let thematicIllustrationKey = "";
+
+  if (/(здоров|дыхани|памят|курени|спорт|самочувств)/.test(illustrationHints)) {
+    thematicIllustrationKey = "health";
+  } else if (/(танц|ритм|движени|бал)/.test(illustrationHints)) {
+    thematicIllustrationKey = "dance";
+  } else if (/(цифр|онлайн|сервис|техн|интернет|гаджет)/.test(illustrationHints)) {
+    thematicIllustrationKey = "digital";
+  } else if (/(семь|внук|бабушк|дет|межпоколен)/.test(illustrationHints)) {
+    thematicIllustrationKey = "family";
+  } else if (/(концерт|музык|песн|вокал|мелод)/.test(illustrationHints)) {
+    thematicIllustrationKey = "music";
+  } else if (/(прогул|экскурс|город|маршрут|истори)/.test(illustrationHints)) {
+    thematicIllustrationKey = "walk";
+  }
+
+  const illustration =
+    thematicIllustrationMap[thematicIllustrationKey] ||
+    illustrationMap[eventItem.format] ||
+    `
+      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
+        <circle cx="70" cy="64" r="34" fill="rgba(46, 179, 152, 0.16)"></circle>
+        <rect x="118" y="44" width="70" height="70" rx="18" fill="rgba(128, 0, 54, 0.12)"></rect>
+        <path d="M86 126H186" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
+      </svg>
+    `;
+
+  return `
+    <article class="poster-card">
+      <div class="poster-topline">
+        <span class="poster-badge">Московское долголетие</span>
+        <span class="poster-format">${eventItem.format}</span>
+      </div>
+      <div class="poster-body">
+        <div class="poster-copy">
+          <p class="poster-date">${eventItem.date}</p>
+          <h4 class="poster-title">${eventItem.title}</h4>
+          <p class="poster-venue">${eventItem.venue}</p>
+          <p class="poster-audience">${eventItem.audience}</p>
+        </div>
+        <div class="poster-art">
+          ${illustration}
+        </div>
+      </div>
+      <div class="poster-footer">
+        <span>${eventItem.district}</span>
+        <span>#МосковскоеДолголетие</span>
+      </div>
+    </article>
+  `;
+}
+
 function renderDetail(filteredEvents) {
   const current =
     filteredEvents.find((event) => event.id === state.activeId) || filteredEvents[0] || events[0];
@@ -370,9 +624,14 @@ function renderDetail(filteredEvents) {
     <h3>${current.title}</h3>
     <p class="detail-copy">${current.description}</p>
 
+    <div class="detail-box detail-box-poster">
+      <h4>Карточка события</h4>
+      ${renderPosterCard(current)}
+    </div>
+
     <div class="detail-columns">
       <div class="detail-box">
-        <h4>Карточка события</h4>
+        <h4>Параметры события</h4>
         <ul class="detail-list">
           <li><strong>Дата:</strong> ${current.date}</li>
           <li><strong>Площадка:</strong> ${current.venue}</li>
@@ -390,11 +649,6 @@ function renderDetail(filteredEvents) {
           <li><strong>Ссылка:</strong> ${current.reportLink || "пока не добавлена"}</li>
         </ul>
       </div>
-    </div>
-
-    <div class="detail-box">
-      <h4>Prompt для DALL-E / Midjourney</h4>
-      <p class="detail-copy">${current.imagePrompt || "Будет сгенерирован после заполнения формы создания анонса."}</p>
     </div>
 
     <div class="detail-note">
@@ -426,6 +680,11 @@ function renderEventModal() {
 
     <p class="detail-copy">${current.description}</p>
 
+    <div class="detail-box detail-box-poster">
+      <h4>Карточка события</h4>
+      ${renderPosterCard(current)}
+    </div>
+
     <div class="event-modal-actions">
       <button class="primary-button" type="button" data-action="edit-event" data-event-id="${current.id}">
         Редактировать
@@ -437,7 +696,7 @@ function renderEventModal() {
 
     <div class="detail-columns">
       <div class="detail-box">
-        <h4>Карточка события</h4>
+        <h4>Параметры события</h4>
         <ul class="detail-list">
           <li><strong>Дата:</strong> ${current.date}</li>
           <li><strong>Площадка:</strong> ${current.venue}</li>
@@ -463,11 +722,6 @@ function renderEventModal() {
           }
         </ul>
       </div>
-    </div>
-
-    <div class="detail-box">
-      <h4>Prompt для DALL-E / Midjourney</h4>
-      <p class="detail-copy">${current.imagePrompt || "Будет сгенерирован после заполнения формы создания анонса."}</p>
     </div>
 
     <section id="reportPanel" class="support-panel" hidden>
@@ -502,13 +756,20 @@ function renderEventModal() {
 
 function renderCounters(filteredEvents) {
   visibleCount.textContent = String(filteredEvents.length);
-  resultState.textContent = `${filteredEvents.length} событий`;
+  const periodLabel =
+    state.period === "week"
+      ? " за неделю"
+      : state.period === "month"
+        ? " за месяц"
+        : "";
+  resultState.textContent = `${filteredEvents.length} событий${periodLabel}`;
 }
 
 function render() {
   const filteredEvents = getFilteredEvents();
   populateFilters();
   renderTags();
+  syncHeroFilterButtons();
   renderCounters(filteredEvents);
   renderCards(filteredEvents);
   renderCalendar(filteredEvents);
@@ -594,18 +855,32 @@ function getTopicPhrase(keywords, format) {
   return `${format.toLowerCase()}, посвящённое темам ${topicLine}`;
 }
 
+function getFormatLead(format) {
+  const formatMap = {
+    "Лекция": "встреча, в которой главное — смысл, ясность и живой разговор",
+    "Мастер-класс": "практическое занятие, где особенно важны участие и личный опыт",
+    "Практикум": "прикладная встреча с понятным результатом и спокойным темпом",
+    "Спорт": "занятие, которое помогает почувствовать движение, лёгкость и внутренний ресурс",
+    "Концерт": "событие с атмосферой, музыкой и общением, которое запоминается надолго",
+    "Экскурсия": "маршрут, позволяющий увидеть привычные места по-новому"
+  };
+
+  return formatMap[format] || "событие, в котором сочетаются польза, атмосфера и участие";
+}
+
 function buildAnnouncement(title, keywords, audience, format, date, venue, registration) {
   const audiencePhrase = getAudiencePhrase(audience);
   const topicPhrase = getTopicPhrase(keywords, format);
+  const formatLead = getFormatLead(format);
   const registrationLine =
     registration && registration !== "Ссылка будет добавлена инициатором"
       ? `Подробности и запись: ${registration}.`
       : "Участие можно уточнить у организатора или на площадке.";
 
   return [
-    `${title} — это ${topicPhrase} для ${audiencePhrase}. Это событие создано для тех, кто хочет провести время ярко, с пользой и в по-настоящему тёплой атмосфере, где хочется остаться до конца и вернуться снова.`,
-    `${capitalizeFirst(date)} встречаемся в ${venue}. Вас ждут понятная программа, живое общение, внимание к каждому участнику и ощущение вовлечённости с первых минут, когда интересно не только слушать, но и быть частью общего настроения.`,
-    `Выбирайте этот день для себя, друзей или семьи: такие встречи дарят энергию, новые знакомства и приятные эмоции, которые остаются надолго. Приходите и присоединяйтесь. ${registrationLine}`
+    `${title} — ${topicPhrase} для ${audiencePhrase}. Это ${formatLead}: с деликатным тоном, ясной подачей и вниманием к тому, чтобы каждому было комфортно включиться с первых минут.`,
+    `${capitalizeFirst(date)} встречаемся в ${venue}. Гостей ждут продуманная программа, тёплая атмосфера и естественное общение без лишней официальности — именно то, ради чего хочется выбраться из рутины и провести время со смыслом.`,
+    `Если вам близки новые впечатления, доброжелательная среда и события, после которых остаётся хорошее послевкусие, обязательно приходите. ${registrationLine}`
   ].join("\n\n");
 }
 
@@ -741,13 +1016,13 @@ function createAnnouncementFromForm(event) {
   const dateValue = eventDateInput.value;
   const venue = eventVenueInput.value.trim();
   const district = eventDistrictInput.value.trim();
-  const format = eventFormatInput.value;
-  const audience = eventAudienceInput.value;
+  const format = eventFormatInput.value || "Событие";
+  const audience = eventAudienceInput.value || "Смешанная";
   const keywordsInput = eventDescriptionInput.value.trim();
   const registration = eventRegistrationInput.value.trim() || "Ссылка будет добавлена инициатором";
   const author = eventAuthorInput.value.trim();
 
-  if (!title || !dateValue || !venue || !district || !format || !audience || !keywordsInput || !author) {
+  if (!title || !dateValue || !venue || !district || !author) {
     formStatus.textContent = "Заполните обязательные поля формы.";
     return;
   }
@@ -775,7 +1050,9 @@ function createAnnouncementFromForm(event) {
     audience,
     summary: announcement.split("\n\n")[0],
     description: announcement,
-    tags: [format.toLowerCase(), district.toLowerCase(), ...keywords.map((item) => item.toLowerCase())].slice(0, 5),
+    tags: [format.toLowerCase(), district.toLowerCase(), ...keywords.map((item) => item.toLowerCase())]
+      .filter(Boolean)
+      .slice(0, 5),
     status: "Опубликовано",
     imagePrompt,
     author,
@@ -851,6 +1128,7 @@ resetFiltersButton.addEventListener("click", () => {
   state.district = "all";
   state.query = "";
   state.tag = "";
+  state.period = "all";
   formatFilter.value = "all";
   audienceFilter.value = "all";
   districtFilter.value = "all";
@@ -859,6 +1137,12 @@ resetFiltersButton.addEventListener("click", () => {
 });
 
 openSubmissionFormButton.addEventListener("click", openCreateModal);
+openWeekPosterButton.addEventListener("click", () => {
+  applyHeroPeriodFilter(state.period === "week" ? "all" : "week");
+});
+openMonthPosterButton.addEventListener("click", () => {
+  applyHeroPeriodFilter(state.period === "month" ? "all" : "month");
+});
 closeSubmissionFormButton.addEventListener("click", closeModal);
 cancelSubmissionButton.addEventListener("click", closeModal);
 closeEventModalButton.addEventListener("click", closeEventModal);

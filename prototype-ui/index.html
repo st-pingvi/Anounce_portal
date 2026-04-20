@@ -21,15 +21,6 @@
           </p>
         </div>
 
-        <nav class="sidebar-nav" aria-label="Разделы">
-          <button class="nav-link active" type="button">Сегодня</button>
-          <button class="nav-link" type="button">Афиша недели</button>
-          <button class="nav-link" type="button">Афиша месяца</button>
-          <button class="nav-link" type="button">Каталог</button>
-          <button class="nav-link" type="button">Календарь</button>
-          <button class="nav-link" type="button">Площадки</button>
-        </nav>
-
         <section class="filter-card">
           <div class="section-head">
             <div>
@@ -94,32 +85,19 @@
 
         <section class="hero">
           <div class="hero-copy">
-            <p class="eyebrow">Афиша апреля</p>
-            <h3>События, которые легко найти, открыть и сразу добавить в планы</h3>
+            <p class="eyebrow">Афиша месяца</p>
+            <h3>События проекта "Московское долголетие"</h3>
             <p>
               Демо показывает, как может выглядеть портал на базе Outline: чистая
               брендовая витрина, быстрые подборки, календарный блок и карточка
               события с записью и пост-ивент данными.
             </p>
             <div class="hero-actions">
-              <button class="primary-button" type="button">Открыть афишу недели</button>
-              <button id="openSubmissionForm" class="secondary-button" type="button">Подать событие</button>
+              <button id="openWeekPoster" class="hero-period-button" type="button">Афиша недели</button>
+              <button id="openMonthPoster" class="hero-period-button secondary-outline-button" type="button">Афиша месяца</button>
+              <button id="openSubmissionForm" class="hero-submit-button" type="button">Подать событие</button>
             </div>
-          </div>
-
-          <div class="hero-stats">
-            <article class="stat-card emerald">
-              <strong id="visibleCount">0</strong>
-              <span>событий по фильтрам</span>
-            </article>
-            <article class="stat-card ruby">
-              <strong>≤ 200</strong>
-              <span>символов в соцанонсе</span>
-            </article>
-            <article class="stat-card turquoise">
-              <strong>1080×1920</strong>
-              <span>формат афиши</span>
-            </article>
+            <span id="visibleCount" class="sr-only">0</span>
           </div>
         </section>
 
@@ -200,28 +178,28 @@
         <form id="submissionForm" class="submission-form">
           <div class="form-grid">
             <label class="form-field">
-              <span>Дата и время</span>
+              <span>Дата и время <strong class="required-mark">*</strong></span>
               <input id="eventDateInput" name="eventDate" type="datetime-local" required />
             </label>
 
             <label class="form-field">
-              <span>Название</span>
+              <span>Название <strong class="required-mark">*</strong></span>
               <input id="eventTitleInput" name="eventTitle" type="text" maxlength="120" required />
             </label>
 
             <label class="form-field">
-              <span>Место проведения</span>
+              <span>Место проведения <strong class="required-mark">*</strong></span>
               <input id="eventVenueInput" name="eventVenue" type="text" maxlength="140" required />
             </label>
 
             <label class="form-field">
-              <span>Район</span>
+              <span>Район <strong class="required-mark">*</strong></span>
               <input id="eventDistrictInput" name="eventDistrict" type="text" maxlength="80" required />
             </label>
 
             <label class="form-field">
               <span>Формат</span>
-              <select id="eventFormatInput" name="eventFormat" required>
+              <select id="eventFormatInput" name="eventFormat">
                 <option value="">Выберите формат</option>
                 <option value="Лекция">Лекция</option>
                 <option value="Мастер-класс">Мастер-класс</option>
@@ -234,7 +212,7 @@
 
             <label class="form-field">
               <span>Для кого</span>
-              <select id="eventAudienceInput" name="eventAudience" required>
+              <select id="eventAudienceInput" name="eventAudience">
                 <option value="">Выберите аудиторию</option>
                 <option value="Участники 55+">Участники 55+</option>
                 <option value="Семьи">Семьи</option>
@@ -252,7 +230,6 @@
                 maxlength="200"
                 rows="4"
                 placeholder="Например: лекция, здоровье, 15 мая, бабушки, память"
-                required
               ></textarea>
             </label>
 
@@ -268,7 +245,7 @@
             </label>
 
             <label class="form-field">
-              <span>Кто внёс</span>
+              <span>Кто внёс <strong class="required-mark">*</strong></span>
               <input
                 id="eventAuthorInput"
                 name="eventAuthor"

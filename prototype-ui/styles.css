@@ -78,12 +78,12 @@ select {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: 292px 1fr;
   min-height: 100vh;
 }
 
 .sidebar {
-  padding: 24px;
+  padding: 20px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 18%),
     linear-gradient(180deg, #1a3d36 0%, var(--emerald) 42%, #123d34 100%);
@@ -101,7 +101,7 @@ select {
 }
 
 .brand-card {
-  padding: 20px;
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-xl);
   background: rgba(255, 255, 255, 0.07);
@@ -137,7 +137,7 @@ select {
 }
 
 .brand-card h1 {
-  font-size: 2.55rem;
+  font-size: 2.2rem;
   line-height: 0.95;
   color: #fff6f8;
 }
@@ -157,8 +157,8 @@ select {
 }
 
 .brand-copy {
-  margin: 16px 0 0;
-  line-height: 1.55;
+  margin: 12px 0 0;
+  line-height: 1.48;
 }
 
 .sidebar-nav {
@@ -196,14 +196,14 @@ select {
 
 .filter-card,
 .policy-card {
-  padding: 18px;
+  padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.08);
 }
 
 .policy-card {
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .section-head {
@@ -216,7 +216,7 @@ select {
 .field {
   display: grid;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .field span {
@@ -242,7 +242,7 @@ select {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .tag {
@@ -320,17 +320,15 @@ select {
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) 320px;
-  gap: 18px;
+  display: block;
   margin-top: 18px;
-  padding: 24px;
+  padding: 18px 22px;
   border-radius: var(--radius-xl);
 }
 
 .hero-copy h3 {
-  max-width: 13ch;
-  font-size: clamp(2rem, 3vw, 3.4rem);
+  max-width: 18ch;
+  font-size: clamp(1.7rem, 2.4vw, 2.6rem);
   line-height: 0.94;
   color: var(--ruby);
 }
@@ -355,14 +353,62 @@ select {
   border: 0;
 }
 
-.primary-button {
+.primary-button,
+.hero-submit-button {
   background: var(--turquoise);
   color: var(--white);
+  box-shadow: 0 10px 24px rgba(46, 179, 152, 0.18);
+}
+
+.primary-button:hover,
+.hero-submit-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(46, 179, 152, 0.24);
+}
+
+.primary-button.is-active,
+.hero-submit-button.is-active {
+  box-shadow: 0 0 0 4px rgba(46, 179, 152, 0.2);
 }
 
 .secondary-button {
-  background: rgba(128, 0, 54, 0.08);
-  color: var(--ruby);
+  border: 1px solid rgba(22, 88, 73, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--emerald);
+}
+
+.secondary-button:hover,
+.ghost-dark-button:hover {
+  background: rgba(22, 88, 73, 0.06);
+}
+
+.hero-period-button,
+.secondary-outline-button {
+  padding: 13px 18px;
+  border: 1px solid rgba(128, 0, 54, 0.18);
+  border-radius: 999px;
+  background: var(--ruby);
+  color: var(--white);
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(128, 0, 54, 0.16);
+}
+
+.hero-period-button:hover,
+.secondary-outline-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(128, 0, 54, 0.22);
+}
+
+.hero-period-button.is-active,
+.secondary-outline-button.is-active {
+  box-shadow: 0 0 0 4px rgba(128, 0, 54, 0.14);
+}
+
+.hero-submit-button {
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
 }
 
 .ghost-dark-button {
@@ -372,11 +418,6 @@ select {
   background: transparent;
   color: var(--emerald);
   cursor: pointer;
-}
-
-.hero-stats {
-  display: grid;
-  gap: 12px;
 }
 
 .stat-card {
@@ -618,9 +659,119 @@ select {
   color: var(--emerald);
 }
 
+.detail-box-poster {
+  margin-top: 22px;
+}
+
+.poster-card {
+  display: grid;
+  max-width: 800px;
+  min-height: 420px;
+  margin: 0 auto;
+  padding: 22px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(46, 179, 152, 0.18), transparent 32%),
+    radial-gradient(circle at left bottom, rgba(189, 83, 109, 0.16), transparent 28%),
+    linear-gradient(160deg, #ffffff 0%, #f5fbf8 52%, #f9f1f4 100%);
+  border: 1px solid rgba(22, 88, 73, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+.poster-topline,
+.poster-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.poster-badge,
+.poster-format,
+.poster-footer span {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+}
+
+.poster-badge {
+  background: var(--ruby);
+  color: var(--white);
+}
+
+.poster-format {
+  background: rgba(46, 179, 152, 0.12);
+  color: var(--emerald);
+}
+
+.poster-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 0;
+}
+
+.poster-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.poster-date {
+  margin: 0;
+  color: var(--ruby);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.poster-title {
+  margin: 0;
+  max-width: 14ch;
+  color: var(--emerald);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.poster-venue,
+.poster-audience {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.poster-footer span {
+  background: rgba(128, 0, 54, 0.08);
+  color: var(--ruby);
+}
+
+.poster-art {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(22, 88, 73, 0.08);
+}
+
+.poster-illustration {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+
 .detail-list {
   margin: 0;
   padding-left: 18px;
+}
+
+.detail-box .detail-list,
+.detail-box .detail-list li,
+.detail-box .detail-list strong {
+  color: var(--ink);
 }
 
 .detail-note {
@@ -704,11 +855,6 @@ select {
 
 .secondary-outline-button {
   padding: 12px 16px;
-  border: 1px solid rgba(128, 0, 54, 0.16);
-  border-radius: 999px;
-  background: rgba(128, 0, 54, 0.06);
-  color: var(--ruby);
-  cursor: pointer;
 }
 
 .support-panel {
@@ -793,6 +939,11 @@ select {
   font-size: 0.92rem;
 }
 
+.required-mark {
+  color: var(--ruby);
+  font-weight: 700;
+}
+
 .form-field input,
 .form-field select,
 .form-field textarea {
@@ -871,6 +1022,14 @@ select {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .poster-body {
+    grid-template-columns: 1fr;
+  }
+
+  .poster-art {
+    min-height: 180px;
   }
 
   .report-grid {
