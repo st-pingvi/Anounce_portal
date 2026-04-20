@@ -106,6 +106,216 @@ const events = [
   },
   {
     id: "EV-006",
+    title: "Лекция о памяти, внимании и хорошем самочувствии",
+    date: "21 апреля, 12:00",
+    isoDate: "2026-04-21T12:00:00",
+    venue: "ЦМД Марьино",
+    district: "ЮВАО",
+    format: "Лекция",
+    audience: "Участники 55+",
+    summary:
+      "Спокойная просветительская встреча о памяти, внимании и простых привычках, которые помогают поддерживать ясность и тонус.",
+    description:
+      "Лекция построена как уважительный разговор без сложных терминов: участники обсудят повседневные практики поддержки памяти, внимание к самочувствию и удобные способы сохранить активность в привычном ритме.",
+    tags: ["здоровье", "память", "лекция"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist health lecture poster for seniors, memory and wellbeing theme, emerald turquoise ruby white palette, calm caring mood, clean composition, elegant typography area, vertical 1080x1920",
+    registration: "Регистрация у администратора площадки",
+    postEvent: "После события добавляются фото, тезисы встречи и короткие отзывы участников.",
+    metrics: "Ожидаемая посещаемость: 34 человека"
+  },
+  {
+    id: "EV-007",
+    title: "Танцевальный вечер: лёгкий ритм и хорошее настроение",
+    date: "22 апреля, 17:30",
+    isoDate: "2026-04-22T17:30:00",
+    venue: "ЦМД Люблино",
+    district: "ЮВАО",
+    format: "Концерт",
+    audience: "Смешанная",
+    summary:
+      "Открытая встреча для тех, кто любит музыку, движение и дружелюбную атмосферу без лишней официальности.",
+    description:
+      "Вечер объединяет музыку, танцевальные паузы и лёгкое живое общение. Формат подойдёт тем, кто хочет перезагрузиться, встретиться с единомышленниками и провести время в тёплой компании.",
+    tags: ["танцы", "музыка", "вечер"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist dance evening poster, caring civic style, ruby emerald turquoise palette, movement and rhythm, warm community atmosphere, vertical 1080x1920",
+    registration: "Свободный вход",
+    postEvent: "После события появятся фотографии вечера и краткий итог программы.",
+    metrics: "Ожидаемая посещаемость: 60 человек"
+  },
+  {
+    id: "EV-008",
+    title: "Смартфон без тревоги: полезные функции каждый день",
+    date: "23 апреля, 11:30",
+    isoDate: "2026-04-23T11:30:00",
+    venue: "ЦМД Фили-Давыдково",
+    district: "ЗАО",
+    format: "Практикум",
+    audience: "Участники 55+",
+    summary:
+      "Практический разбор полезных функций смартфона: сообщения, фото, карты, записи и безопасность в повседневной жизни.",
+    description:
+      "Участники шаг за шагом пройдут понятные сценарии использования телефона: от быстрых сообщений до полезных настроек, которые делают ежедневные задачи проще и спокойнее.",
+    tags: ["цифровая грамотность", "смартфон", "практикум"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist digital literacy poster, smartphone workshop for seniors, emerald and ruby accents, clean civic design, caring atmosphere, vertical 1080x1920",
+    registration: "Запись по телефону площадки",
+    postEvent: "После события публикуются фото и список полезных цифровых навыков встречи.",
+    metrics: "Ожидаемая посещаемость: 22 человека"
+  },
+  {
+    id: "EV-009",
+    title: "Семейная суббота: открытки, сладости и тёплые истории",
+    date: "24 апреля, 13:00",
+    isoDate: "2026-04-24T13:00:00",
+    venue: "ЦМД Зюзино",
+    district: "ЮЗАО",
+    format: "Мастер-класс",
+    audience: "Семьи",
+    summary:
+      "Творческая встреча для бабушек, дедушек и внуков с совместным занятием, памятными открытками и небольшим чаепитием.",
+    description:
+      "Гостей ждёт добрый семейный формат с простой творческой частью, совместным разговором и атмосферой, в которой легко быть рядом, общаться и создавать общее воспоминание.",
+    tags: ["семьи", "творчество", "сладости"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist family workshop poster with cards and sweets, warm intergenerational mood, emerald turquoise ruby white palette, vertical 1080x1920",
+    registration: "По предварительной записи у площадки",
+    postEvent: "После встречи добавляются фото работ и отзывы семей.",
+    metrics: "Ожидаемая посещаемость: 20 семей"
+  },
+  {
+    id: "EV-010",
+    title: "Маршрут района: прогулка по тихим историям Марьина",
+    date: "25 апреля, 15:00",
+    isoDate: "2026-04-25T15:00:00",
+    venue: "ЦМД Марьино",
+    district: "ЮВАО",
+    format: "Экскурсия",
+    audience: "Смешанная",
+    summary:
+      "Неспешная прогулка по району с городскими сюжетами, знакомыми местами и новыми деталями привычного маршрута.",
+    description:
+      "Участники пройдут небольшой городской маршрут, поговорят о памяти места, привычках района и увидят, как знакомые улицы открываются по-новому через живой рассказ и совместное внимание.",
+    tags: ["прогулка", "город", "маршрут"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist neighborhood walk poster, city route and stories, elegant caring urban mood, emerald ruby turquoise palette, vertical 1080x1920",
+    registration: "По ссылке в карточке",
+    postEvent: "После прогулки будет добавлена галерея маршрута и короткий рассказ по итогам.",
+    metrics: "Ожидаемая посещаемость: 26 человек"
+  },
+  {
+    id: "EV-011",
+    title: "Утро движения: дыхание, суставная разминка, баланс",
+    date: "26 апреля, 09:30",
+    isoDate: "2026-04-26T09:30:00",
+    venue: "ЦМД Измайлово",
+    district: "ВАО",
+    format: "Спорт",
+    audience: "Участники 55+",
+    summary:
+      "Мягкое занятие для бодрого старта дня: дыхательные практики, спокойное движение и упражнения на баланс.",
+    description:
+      "Занятие подойдёт тем, кто ищет безопасную и поддерживающую физическую активность в утреннем формате. Всё построено на комфортном темпе, внимании к телу и ощущении лёгкости после встречи.",
+    tags: ["здоровье", "движение", "утро"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist gentle movement poster for seniors, breathing and balance class, emerald turquoise ruby palette, calm healthy mood, vertical 1080x1920",
+    registration: "Регистрация на месте",
+    postEvent: "После занятия публикуются фото и заметка о программе разминки.",
+    metrics: "Ожидаемая посещаемость: 28 человек"
+  },
+  {
+    id: "EV-012",
+    title: "Вокальная гостиная: любимые мелодии весны",
+    date: "27 апреля, 18:30",
+    isoDate: "2026-04-27T18:30:00",
+    venue: "ЦМД Аэропорт",
+    district: "САО",
+    format: "Концерт",
+    audience: "Смешанная",
+    summary:
+      "Музыкальная гостиная с живым исполнением, знакомыми песнями и камерной атмосферой весеннего вечера.",
+    description:
+      "Программа собрана как тёплая встреча с музыкой, в которой важны настроение, участие зала и возможность после выступления остаться на разговор и общее впечатление.",
+    tags: ["концерт", "музыка", "вокал"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist spring music salon poster, vocal evening, ruby emerald turquoise palette, elegant and warm, vertical 1080x1920",
+    registration: "Свободный вход по предварительной отметке",
+    postEvent: "После вечера появятся фото, видеомоменты и короткий отзыв о программе.",
+    metrics: "Ожидаемая посещаемость: 48 человек"
+  },
+  {
+    id: "EV-013",
+    title: "Онлайн-сервисы без барьеров: запись, карты, сообщения",
+    date: "28 апреля, 12:30",
+    isoDate: "2026-04-28T12:30:00",
+    venue: "ЦМД Ясенево",
+    district: "ЮЗАО",
+    format: "Лекция",
+    audience: "Участники 55+",
+    summary:
+      "Просветительская встреча о цифровых сервисах, которые помогают в ежедневных задачах и делают жизнь удобнее.",
+    description:
+      "Участники разберут понятные примеры использования онлайн-сервисов: запись, маршруты, сообщения и полезные функции, которые помогают уверенно ориентироваться в повседневных цифровых сценариях.",
+    tags: ["цифровая грамотность", "онлайн", "лекция"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist civic digital services lecture poster, seniors, smartphone and online tools theme, emerald ruby palette, vertical 1080x1920",
+    registration: "По телефону администратора",
+    postEvent: "После встречи добавляются фото и список рассмотренных сервисов.",
+    metrics: "Ожидаемая посещаемость: 32 человека"
+  },
+  {
+    id: "EV-014",
+    title: "Праздник двора: музыка, танцы и сладкие подарки",
+    date: "29 апреля, 16:00",
+    isoDate: "2026-04-29T16:00:00",
+    venue: "ЦМД Отрадное",
+    district: "СВАО",
+    format: "Концерт",
+    audience: "Смешанная",
+    summary:
+      "Небольшой районный праздник с музыкой, танцевальными паузами, дружелюбной атмосферой и приятными сюрпризами для гостей.",
+    description:
+      "Событие объединяет музыкальный блок, танцевальное настроение и праздничные детали, которые делают встречу особенно тёплой. Это формат для общения, лёгкости и радости совместного времени.",
+    tags: ["танцы", "подарки", "праздник"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist neighborhood celebration poster, music dance sweets gifts, caring community mood, emerald ruby turquoise palette, vertical 1080x1920",
+    registration: "Свободный вход",
+    postEvent: "После праздника публикуются лучшие фото и краткий итог программы.",
+    metrics: "Ожидаемая посещаемость: 75 человек"
+  },
+  {
+    id: "EV-015",
+    title: "Тёплый май: арт-мастерская для старших и младших",
+    date: "2 мая, 14:30",
+    isoDate: "2026-05-02T14:30:00",
+    venue: "ЦМД Южное Бутово",
+    district: "ЮЗАО",
+    format: "Мастер-класс",
+    audience: "Семьи",
+    summary:
+      "Арт-встреча для семей, где важны совместное творчество, спокойный ритм и радость от простого общего дела.",
+    description:
+      "На мастерской участники создадут небольшую памятную работу, пообщаются и проведут время в мягком семейном формате, который сближает поколения и оставляет приятное послевкусие.",
+    tags: ["семьи", "творчество", "май"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist family art workshop poster, spring mood, grandparents and grandchildren creating together, emerald turquoise ruby palette, vertical 1080x1920",
+    registration: "Предварительная запись через площадку",
+    postEvent: "После события появятся фотографии работ и короткий семейный фотоотчёт.",
+    metrics: "Ожидаемая посещаемость: 16 семей"
+  },
+  {
+    id: "EV-016",
     title: "Подать событие в портал",
     date: "Ежедневно",
     isoDate: "2026-04-20T09:00:00",
@@ -186,6 +396,38 @@ function uniq(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b, "ru"));
 }
 
+function parseMultiValue(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatMultiValue(value) {
+  return parseMultiValue(value).join(", ");
+}
+
+function getPrimaryValue(value, fallback = "") {
+  return parseMultiValue(value)[0] || fallback;
+}
+
+function getSelectedValues(selectElement) {
+  return Array.from(selectElement.selectedOptions || [])
+    .map((option) => option.value)
+    .filter(Boolean);
+}
+
+function setSelectedValues(selectElement, values) {
+  const selectedValues = new Set(parseMultiValue(values));
+  Array.from(selectElement.options).forEach((option) => {
+    option.selected = selectedValues.has(option.value);
+  });
+}
+
 function getEventById(eventId) {
   return events.find((item) => item.id === eventId);
 }
@@ -205,6 +447,10 @@ function hasEventReport(eventItem) {
   );
 }
 
+function canCompleteEvent(eventItem) {
+  return eventItem.format !== "Сервис" && hasEventReport(eventItem) && !eventItem.completed;
+}
+
 function isPastEvent(eventItem) {
   return new Date(eventItem.isoDate) < new Date();
 }
@@ -214,8 +460,12 @@ function getEventStatusLabel(eventItem) {
     return eventItem.status;
   }
 
-  if (hasEventReport(eventItem)) {
+  if (eventItem.completed) {
     return "Завершено";
+  }
+
+  if (hasEventReport(eventItem)) {
+    return "Готово к завершению";
   }
 
   if (isPastEvent(eventItem)) {
@@ -301,14 +551,14 @@ function populateFilters() {
   audienceFilter.innerHTML = `<option value="all">Все аудитории</option>`;
   districtFilter.innerHTML = `<option value="all">Все районы</option>`;
 
-  uniq(events.map((event) => event.format)).forEach((value) => {
+  uniq(events.flatMap((event) => parseMultiValue(event.format))).forEach((value) => {
     formatFilter.insertAdjacentHTML(
       "beforeend",
       `<option value="${value}">${value}</option>`
     );
   });
 
-  uniq(events.map((event) => event.audience)).forEach((value) => {
+  uniq(events.flatMap((event) => parseMultiValue(event.audience))).forEach((value) => {
     audienceFilter.insertAdjacentHTML(
       "beforeend",
       `<option value="${value}">${value}</option>`
@@ -346,16 +596,16 @@ function matchesFilters(event) {
     event.summary,
     event.venue,
     event.district,
-    event.format,
-    event.audience,
+    formatMultiValue(event.format),
+    formatMultiValue(event.audience),
     ...event.tags
   ]
     .join(" ")
     .toLowerCase();
 
   return (
-    (state.format === "all" || event.format === state.format) &&
-    (state.audience === "all" || event.audience === state.audience) &&
+    (state.format === "all" || parseMultiValue(event.format).includes(state.format)) &&
+    (state.audience === "all" || parseMultiValue(event.audience).includes(state.audience)) &&
     (state.district === "all" || event.district === state.district) &&
     (!state.tag || event.tags.includes(state.tag)) &&
     (!query || haystack.includes(query)) &&
@@ -392,8 +642,8 @@ function renderCards(filteredEvents) {
       <h3>${event.title}</h3>
       <p class="event-summary">${event.summary}</p>
       <div class="event-meta">
-        <span>${event.format}</span>
-        <span>${event.audience}</span>
+        <span>${formatMultiValue(event.format)}</span>
+        <span>${formatMultiValue(event.audience)}</span>
         <span>${event.venue}, ${event.district}</span>
       </div>
       <div class="event-tags">
@@ -455,6 +705,7 @@ function renderCalendar(filteredEvents) {
 }
 
 function renderPosterCard(eventItem) {
+  const primaryFormat = getPrimaryValue(eventItem.format, "Событие");
   const thematicIllustrationMap = {
     health: `
       <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
@@ -574,7 +825,7 @@ function renderPosterCard(eventItem) {
     eventItem.title,
     eventItem.summary,
     eventItem.description,
-    eventItem.format,
+    formatMultiValue(eventItem.format),
     ...(eventItem.tags || [])
   ]
     .join(" ")
@@ -598,7 +849,7 @@ function renderPosterCard(eventItem) {
 
   const illustration =
     thematicIllustrationMap[thematicIllustrationKey] ||
-    illustrationMap[eventItem.format] ||
+    illustrationMap[primaryFormat] ||
     `
       <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
         <circle cx="70" cy="64" r="34" fill="rgba(46, 179, 152, 0.16)"></circle>
@@ -611,14 +862,14 @@ function renderPosterCard(eventItem) {
     <article class="poster-card">
       <div class="poster-topline">
         <span class="poster-badge">Московское долголетие</span>
-        <span class="poster-format">${eventItem.format}</span>
+        <span class="poster-format">${formatMultiValue(eventItem.format)}</span>
       </div>
       <div class="poster-body">
         <div class="poster-copy">
           <p class="poster-date">${eventItem.date}</p>
           <h4 class="poster-title">${eventItem.title}</h4>
           <p class="poster-venue">${eventItem.venue}</p>
-          <p class="poster-audience">${eventItem.audience}</p>
+          <p class="poster-audience">${formatMultiValue(eventItem.audience)}</p>
         </div>
         <div class="poster-art">
           ${illustration}
@@ -666,8 +917,8 @@ function renderDetail(filteredEvents) {
 
   detailPanel.innerHTML = `
     <div class="detail-topline">
-      <span class="detail-chip">${current.format}</span>
-      <span class="detail-chip">${current.audience}</span>
+      <span class="detail-chip">${formatMultiValue(current.format)}</span>
+      <span class="detail-chip">${formatMultiValue(current.audience)}</span>
       <span class="detail-chip">${current.district}</span>
     </div>
     <h3>${current.title}</h3>
@@ -682,6 +933,15 @@ function renderDetail(filteredEvents) {
       <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
         Экспорт в PDF
       </button>
+      ${
+        canCompleteEvent(current)
+          ? `
+            <button class="primary-button" type="button" data-action="complete-event" data-event-id="${current.id}">
+              Завершить событие
+            </button>
+          `
+          : ""
+      }
     </div>
 
     <div class="detail-columns">
@@ -730,8 +990,8 @@ function renderEventModal() {
   eventModalTitle.textContent = current.title;
   eventModalBody.innerHTML = `
     <div class="detail-topline">
-      <span class="detail-chip">${current.format}</span>
-      <span class="detail-chip">${current.audience}</span>
+      <span class="detail-chip">${formatMultiValue(current.format)}</span>
+      <span class="detail-chip">${formatMultiValue(current.audience)}</span>
       <span class="detail-chip">${current.district}</span>
     </div>
 
@@ -749,6 +1009,15 @@ function renderEventModal() {
       <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
         Экспорт в PDF
       </button>
+      ${
+        canCompleteEvent(current)
+          ? `
+            <button class="primary-button" type="button" data-action="complete-event" data-event-id="${current.id}">
+              Завершить событие
+            </button>
+          `
+          : ""
+      }
       <button class="secondary-outline-button" type="button" data-action="toggle-report" data-event-id="${current.id}">
         Добавить отчёт по фото
       </button>
@@ -895,6 +1164,7 @@ function joinKeywordsForSentence(keywords) {
 }
 
 function getAudiencePhrase(audience) {
+  const primaryAudience = getPrimaryValue(audience);
   const audienceMap = {
     "Участники 55+": "тех, кто хочет провести время с пользой и в хорошей компании",
     "Семьи": "семьи, которым важны теплое общение и совместные впечатления",
@@ -903,24 +1173,26 @@ function getAudiencePhrase(audience) {
     "Партнеры": "партнеров, которым интересно участие в совместных городских инициативах"
   };
 
-  return audienceMap[audience] || "всех, кому интересно это событие";
+  return audienceMap[primaryAudience] || "всех, кому интересно это событие";
 }
 
 function getTopicPhrase(keywords, format) {
+  const primaryFormat = getPrimaryValue(format, "Событие");
   const topicLine = joinKeywordsForSentence(keywords);
 
   if (!keywords.length) {
-    return `встречу в формате «${format}»`;
+    return `встречу в формате «${primaryFormat}»`;
   }
 
   if (keywords.length === 1) {
-    return `${format.toLowerCase()} о ${topicLine}`;
+    return `${primaryFormat.toLowerCase()} о ${topicLine}`;
   }
 
-  return `${format.toLowerCase()}, посвящённое темам ${topicLine}`;
+  return `${primaryFormat.toLowerCase()}, посвящённое темам ${topicLine}`;
 }
 
 function getFormatLead(format) {
+  const primaryFormat = getPrimaryValue(format, "Событие");
   const formatMap = {
     "Лекция": "встреча, в которой главное — смысл, ясность и живой разговор",
     "Мастер-класс": "практическое занятие, где особенно важны участие и личный опыт",
@@ -930,7 +1202,7 @@ function getFormatLead(format) {
     "Экскурсия": "маршрут, позволяющий увидеть привычные места по-новому"
   };
 
-  return formatMap[format] || "событие, в котором сочетаются польза, атмосфера и участие";
+  return formatMap[primaryFormat] || "событие, в котором сочетаются польза, атмосфера и участие";
 }
 
 function buildAnnouncement(title, keywords, audience, format, date, venue, registration) {
@@ -950,9 +1222,11 @@ function buildAnnouncement(title, keywords, audience, format, date, venue, regis
 }
 
 function buildImagePrompt(title, keywords, format, audience) {
+  const formatLabel = formatMultiValue(format) || "Событие";
+  const audienceLabel = formatMultiValue(audience) || "Смешанная";
   const keywordPrompt = keywords.length ? keywords.join(", ") : "community, care, inspiration";
 
-  return `Create a minimalist vertical event poster for "Moscow Longevity". Theme: ${title}. Format: ${format}. Audience: ${audience}. Include visual cues inspired by ${keywordPrompt}. Style: warm, caring, respectful, modern civic design, clean composition, large title area, no clutter, no noise. Palette: emerald, turquoise, ruby, red and white. Typography feeling: Circe Bold / Extra Bold. Abstract or human-centered imagery, elegant shapes, soft light. Output: PNG poster, 1080x1920.`;
+  return `Create a minimalist vertical event poster for "Moscow Longevity". Theme: ${title}. Format: ${formatLabel}. Audience: ${audienceLabel}. Include visual cues inspired by ${keywordPrompt}. Style: warm, caring, respectful, modern civic design, clean composition, large title area, no clutter, no noise. Palette: emerald, turquoise, ruby, red and white. Typography feeling: Circe Bold / Extra Bold. Abstract or human-centered imagery, elegant shapes, soft light. Output: PNG poster, 1080x1920.`;
 }
 
 function resetSubmissionFormState() {
@@ -970,8 +1244,8 @@ function populateSubmissionForm(eventItem) {
   eventTitleInput.value = eventItem.title || "";
   eventVenueInput.value = eventItem.venue || "";
   eventDistrictInput.value = eventItem.district || "";
-  eventFormatInput.value = eventItem.format || "";
-  eventAudienceInput.value = eventItem.audience || "";
+  setSelectedValues(eventFormatInput, eventItem.format);
+  setSelectedValues(eventAudienceInput, eventItem.audience);
   eventDescriptionInput.value = getEventKeywords(eventItem);
   eventRegistrationInput.value = eventItem.registration || "";
   eventAuthorInput.value = eventItem.author || "";
@@ -1232,6 +1506,22 @@ function exportEventAnnouncement(eventId) {
   printWindow.document.close();
 }
 
+function completeEvent(eventId) {
+  const current = getEventById(eventId);
+
+  if (!current || !canCompleteEvent(current)) {
+    return;
+  }
+
+  current.completed = true;
+  current.status = "Завершено";
+  render();
+
+  if (!eventModal.hidden) {
+    renderEventModal();
+  }
+}
+
 function toggleReportPanel() {
   const reportPanel = document.querySelector("#reportPanel");
 
@@ -1285,7 +1575,8 @@ function saveEventReport(event) {
   current.reportPhotos = photoPreviews.length ? photoPreviews : current.reportPhotos || [];
   current.reportLink = reportLinkValue || current.reportLink || "";
   current.postEvent = "Фотоотчёт и итоговые материалы добавлены в карточку события.";
-  current.status = hasEventReport(current) ? "Завершено" : current.status;
+  current.completed = false;
+  current.status = hasEventReport(current) ? "Готово к завершению" : current.status;
 
   render();
   renderEventModal();
@@ -1309,8 +1600,10 @@ function createAnnouncementFromForm(event) {
   const dateValue = eventDateInput.value;
   const venue = eventVenueInput.value.trim();
   const district = eventDistrictInput.value.trim();
-  const format = eventFormatInput.value || "Событие";
-  const audience = eventAudienceInput.value || "Смешанная";
+  const formatValues = getSelectedValues(eventFormatInput);
+  const audienceValues = getSelectedValues(eventAudienceInput);
+  const format = formatValues.length ? formatValues.join(", ") : "Событие";
+  const audience = audienceValues.length ? audienceValues.join(", ") : "Смешанная";
   const keywordsInput = eventDescriptionInput.value.trim();
   const registration = eventRegistrationInput.value.trim() || "Ссылка будет добавлена инициатором";
   const author = eventAuthorInput.value.trim();
@@ -1456,6 +1749,7 @@ eventModal.addEventListener("click", (event) => {
 eventModalBody.addEventListener("click", (event) => {
   const editButton = event.target.closest('[data-action="edit-event"]');
   const exportButton = event.target.closest('[data-action="export-event"]');
+  const completeButton = event.target.closest('[data-action="complete-event"]');
   const reportButton = event.target.closest('[data-action="toggle-report"]');
 
   if (editButton) {
@@ -1469,15 +1763,25 @@ eventModalBody.addEventListener("click", (event) => {
     return;
   }
 
+  if (completeButton) {
+    completeEvent(completeButton.dataset.eventId);
+    return;
+  }
+
   if (reportButton) {
     toggleReportPanel();
   }
 });
 detailPanel.addEventListener("click", (event) => {
   const exportButton = event.target.closest('[data-action="export-event"]');
+  const completeButton = event.target.closest('[data-action="complete-event"]');
 
   if (exportButton) {
     exportEventAnnouncement(exportButton.dataset.eventId);
+  }
+
+  if (completeButton) {
+    completeEvent(completeButton.dataset.eventId);
   }
 });
 eventModalBody.addEventListener("submit", (event) => {
