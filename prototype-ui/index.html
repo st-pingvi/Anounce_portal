@@ -30,28 +30,39 @@
             <button id="resetFilters" class="ghost-button" type="button">Сбросить</button>
           </div>
 
-          <label class="field">
-            <span>Формат</span>
-            <select id="formatFilter">
-              <option value="all">Все форматы</option>
-            </select>
-          </label>
+          <div class="field">
+            <span>Форматы</span>
+            <div id="formatFilter" class="filter-options" role="group" aria-label="Форматы"></div>
+          </div>
 
-          <label class="field">
+          <div class="field">
             <span>Аудитория</span>
-            <select id="audienceFilter">
-              <option value="all">Все аудитории</option>
-            </select>
-          </label>
+            <div id="audienceFilter" class="filter-options" role="group" aria-label="Аудитория"></div>
+          </div>
 
-          <label class="field">
+          <div class="field">
             <span>Район</span>
-            <select id="districtFilter">
-              <option value="all">Все районы</option>
-            </select>
-          </label>
+            <div id="districtFilter" class="filter-options" role="group" aria-label="Район"></div>
+          </div>
 
-          <div class="tag-cloud" id="tagCloud"></div>
+          <div class="field">
+            <span>Дата</span>
+            <div class="date-filter">
+              <label>
+                <small>Дата или начало</small>
+                <input id="dateFromFilter" type="date" aria-label="Дата события или начало периода" />
+              </label>
+              <label>
+                <small>Конец периода</small>
+                <input id="dateToFilter" type="date" aria-label="Конец периода" />
+              </label>
+            </div>
+          </div>
+
+          <button id="toggleTags" class="tag-toggle-button" type="button" aria-expanded="false" aria-controls="tagCloud">
+            Показать теги
+          </button>
+          <div class="tag-cloud is-hidden" id="tagCloud"></div>
         </section>
 
         <section class="policy-card">
@@ -95,6 +106,7 @@
             <div class="hero-actions">
               <button id="openWeekPoster" class="hero-period-button" type="button">Афиша недели</button>
               <button id="openMonthPoster" class="hero-period-button secondary-outline-button" type="button">Афиша месяца</button>
+              <button id="openAllEvents" class="hero-period-button secondary-outline-button" type="button">Все события</button>
               <button id="openSubmissionForm" class="hero-submit-button" type="button">Подать событие</button>
             </div>
             <span id="visibleCount" class="sr-only">0</span>
@@ -199,25 +211,25 @@
 
             <label class="form-field">
               <span>Формат</span>
-              <select id="eventFormatInput" name="eventFormat" multiple size="6">
-                <option value="Лекция">Лекция</option>
-                <option value="Мастер-класс">Мастер-класс</option>
-                <option value="Практикум">Практикум</option>
-                <option value="Спорт">Спорт</option>
-                <option value="Концерт">Концерт</option>
-                <option value="Экскурсия">Экскурсия</option>
-              </select>
+              <div id="eventFormatInput" class="choice-grid" role="group" aria-label="Формат события">
+                <label><input type="checkbox" value="Лекция" /> Лекция</label>
+                <label><input type="checkbox" value="Мастер-класс" /> Мастер-класс</label>
+                <label><input type="checkbox" value="Практикум" /> Практикум</label>
+                <label><input type="checkbox" value="Спорт" /> Спорт</label>
+                <label><input type="checkbox" value="Концерт" /> Концерт</label>
+                <label><input type="checkbox" value="Экскурсия" /> Экскурсия</label>
+              </div>
             </label>
 
             <label class="form-field">
               <span>Для кого</span>
-              <select id="eventAudienceInput" name="eventAudience" multiple size="5">
-                <option value="Участники 55+">Участники 55+</option>
-                <option value="Семьи">Семьи</option>
-                <option value="Сотрудники">Сотрудники</option>
-                <option value="Смешанная">Смешанная</option>
-                <option value="Партнеры">Партнеры</option>
-              </select>
+              <div id="eventAudienceInput" class="choice-grid" role="group" aria-label="Аудитория события">
+                <label><input type="checkbox" value="Участники 55+" /> Участники 55+</label>
+                <label><input type="checkbox" value="Семьи" /> Семьи</label>
+                <label><input type="checkbox" value="Сотрудники" /> Сотрудники</label>
+                <label><input type="checkbox" value="Смешанная" /> Смешанная</label>
+                <label><input type="checkbox" value="Партнеры" /> Партнеры</label>
+              </div>
             </label>
 
             <label class="form-field form-field-wide">
@@ -281,6 +293,16 @@
 
         <div id="eventModalBody" class="event-modal-body"></div>
       </section>
+    </div>
+
+    <div id="imagePreviewModal" class="image-preview-modal" hidden>
+      <button class="image-preview-backdrop" type="button" data-close-image-preview="true" aria-label="Закрыть изображение"></button>
+      <figure class="image-preview-frame">
+        <button id="closeImagePreview" class="icon-button image-preview-close" type="button" aria-label="Закрыть">
+          ×
+        </button>
+        <img id="imagePreview" alt="Полное изображение события" />
+      </figure>
     </div>
 
     <script src="./app.js"></script>

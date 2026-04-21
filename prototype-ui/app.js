@@ -340,11 +340,14 @@ const events = [
 const formatFilter = document.querySelector("#formatFilter");
 const audienceFilter = document.querySelector("#audienceFilter");
 const districtFilter = document.querySelector("#districtFilter");
+const dateFromFilter = document.querySelector("#dateFromFilter");
+const dateToFilter = document.querySelector("#dateToFilter");
 const searchInput = document.querySelector("#searchInput");
 const resetFiltersButton = document.querySelector("#resetFilters");
 const openSubmissionFormButton = document.querySelector("#openSubmissionForm");
 const openWeekPosterButton = document.querySelector("#openWeekPoster");
 const openMonthPosterButton = document.querySelector("#openMonthPoster");
+const openAllEventsButton = document.querySelector("#openAllEvents");
 const closeSubmissionFormButton = document.querySelector("#closeSubmissionForm");
 const cancelSubmissionButton = document.querySelector("#cancelSubmission");
 const submissionModal = document.querySelector("#submissionModal");
@@ -357,6 +360,7 @@ const calendarList = document.querySelector("#calendarList");
 const visibleCount = document.querySelector("#visibleCount");
 const resultState = document.querySelector("#resultState");
 const tagCloud = document.querySelector("#tagCloud");
+const toggleTagsButton = document.querySelector("#toggleTags");
 const dashboardGrid = document.querySelector(".dashboard-grid");
 const eventDateInput = document.querySelector("#eventDateInput");
 const eventTitleInput = document.querySelector("#eventTitleInput");
@@ -372,21 +376,38 @@ const eventModal = document.querySelector("#eventModal");
 const closeEventModalButton = document.querySelector("#closeEventModal");
 const eventModalTitle = document.querySelector("#eventModalTitle");
 const eventModalBody = document.querySelector("#eventModalBody");
+const imagePreviewModal = document.querySelector("#imagePreviewModal");
+const imagePreview = document.querySelector("#imagePreview");
+const closeImagePreviewButton = document.querySelector("#closeImagePreview");
 
 const featuredTags = [
   "цифровая грамотность",
   "семьи",
   "здоровье",
   "концерт",
-  "публикация"
+  "публикация",
+  "движение",
+  "лекция",
+  "мастер-класс",
+  "музыка",
+  "прогулка",
+  "творчество",
+  "танцы",
+  "практикум",
+  "город",
+  "сервисы",
+  "межпоколенческий формат"
 ];
 
 const state = {
-  format: "all",
-  audience: "all",
-  district: "all",
+  format: [],
+  audience: [],
+  district: [],
   query: "",
-  tag: "",
+  tags: [],
+  dateFrom: "",
+  dateTo: "",
+  tagsExpanded: false,
   period: "all",
   activeId: events[0].id,
   editingId: null
@@ -415,17 +436,157 @@ function getPrimaryValue(value, fallback = "") {
   return parseMultiValue(value)[0] || fallback;
 }
 
-function getSelectedValues(selectElement) {
-  return Array.from(selectElement.selectedOptions || [])
-    .map((option) => option.value)
+function getSelectedValues(choiceGroup) {
+  return Array.from(choiceGroup.querySelectorAll('input[type="checkbox"]:checked'))
+    .map((input) => input.value)
     .filter(Boolean);
 }
 
-function setSelectedValues(selectElement, values) {
+function setSelectedValues(choiceGroup, values) {
   const selectedValues = new Set(parseMultiValue(values));
-  Array.from(selectElement.options).forEach((option) => {
-    option.selected = selectedValues.has(option.value);
+  choiceGroup.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+    input.checked = selectedValues.has(input.value);
   });
+}
+
+function valuesMatchAny(eventValue, selectedValues) {
+  return !selectedValues.length || parseMultiValue(eventValue).some((value) => selectedValues.includes(value));
+}
+
+function getFilterSelections(filterElement) {
+  return Array.from(filterElement.querySelectorAll('input[type="checkbox"]:checked')).map((input) => input.value);
+}
+
+function setFilterSelections(filterElement, selectedValues) {
+  const selectedSet = new Set(selectedValues);
+  filterElement.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+    input.checked = selectedSet.has(input.value);
+  });
+}
+
+function getEventDateOnly(eventItem) {
+  const eventDate = new Date(eventItem.isoDate);
+
+  if (Number.isNaN(eventDate.getTime())) {
+    return "";
+  }
+
+  const year = eventDate.getFullYear();
+  const month = String(eventDate.getMonth() + 1).padStart(2, "0");
+  const day = String(eventDate.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function escapeAttribute(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function getStableImageSeed(value) {
+  return String(value || "moscow-longevity").split("").reduce((hash, char) => {
+    return (hash * 31 + char.charCodeAt(0)) % 100000;
+  }, 17);
+}
+
+function buildGeneratedPosterImageUrl(eventItem) {
+  const visualPrompt = [
+    eventItem.imagePrompt,
+    "Key visual only, no readable text, no letters, no words, no logos.",
+    "Warm respectful minimal illustration for an event card, editorial civic style."
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const params = new URLSearchParams({
+    width: "768",
+    height: "1024",
+    nologo: "true",
+    seed: String(getStableImageSeed(eventItem.id))
+  });
+
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(visualPrompt)}?${params.toString()}`;
+}
+
+function renderGeneratedPosterImage(eventItem, className = "generated-poster-image") {
+  const generatedImageUrl = buildGeneratedPosterImageUrl(eventItem);
+
+  return `
+    <img
+      class="${className}"
+      src="${escapeAttribute(generatedImageUrl)}"
+      alt="AI-визуал события ${escapeAttribute(eventItem.title)}"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      onload="this.classList.add('is-loaded')"
+      onerror="this.classList.add('is-hidden')"
+    />
+  `;
+}
+
+function matchesDateFilter(eventItem) {
+  if (!state.dateFrom && !state.dateTo) {
+    return true;
+  }
+
+  const eventDate = getEventDateOnly(eventItem);
+
+  if (!eventDate) {
+    return false;
+  }
+
+  if (state.dateFrom && state.dateTo) {
+    return eventDate >= state.dateFrom && eventDate <= state.dateTo;
+  }
+
+  if (state.dateFrom) {
+    return eventDate === state.dateFrom;
+  }
+
+  return eventDate <= state.dateTo;
+}
+
+function formatCalendarDay(date) {
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "short"
+  }).format(date);
+}
+
+function formatCalendarWeekday(date) {
+  return new Intl.DateTimeFormat("ru-RU", {
+    weekday: "short"
+  }).format(date);
+}
+
+function getCalendarWeekStart(filteredEvents) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (state.dateFrom) {
+    const selectedDate = new Date(`${state.dateFrom}T00:00:00`);
+    selectedDate.setHours(0, 0, 0, 0);
+    return selectedDate;
+  }
+
+  const visibleSchedulableEvents = filteredEvents
+    .filter((eventItem) => eventItem.format !== "Сервис")
+    .sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+  const referenceEvent =
+    visibleSchedulableEvents.find((eventItem) => new Date(eventItem.isoDate) >= today) ||
+    visibleSchedulableEvents[0] ||
+    getSchedulableEvents().find((eventItem) => new Date(eventItem.isoDate) >= today) ||
+    getSchedulableEvents()[0];
+
+  if (!referenceEvent) {
+    return today;
+  }
+
+  const start = new Date(referenceEvent.isoDate);
+  start.setHours(0, 0, 0, 0);
+  return start;
 }
 
 function getEventById(eventId) {
@@ -448,7 +609,7 @@ function hasEventReport(eventItem) {
 }
 
 function canCompleteEvent(eventItem) {
-  return eventItem.format !== "Сервис" && hasEventReport(eventItem) && !eventItem.completed;
+  return eventItem.format !== "Сервис" && isPastEvent(eventItem) && hasEventReport(eventItem) && !eventItem.completed;
 }
 
 function isPastEvent(eventItem) {
@@ -461,11 +622,15 @@ function getEventStatusLabel(eventItem) {
   }
 
   if (eventItem.completed) {
-    return "Завершено";
+    return "Закрыто";
+  }
+
+  if (hasEventReport(eventItem) && isPastEvent(eventItem)) {
+    return "Готово к закрытию";
   }
 
   if (hasEventReport(eventItem)) {
-    return "Готово к завершению";
+    return "Отчёт добавлен";
   }
 
   if (isPastEvent(eventItem)) {
@@ -533,8 +698,19 @@ function matchesPeriod(eventItem) {
 }
 
 function syncHeroFilterButtons() {
+  const allFiltersInactive =
+    state.period === "all" &&
+    !state.format.length &&
+    !state.audience.length &&
+    !state.district.length &&
+    !state.query &&
+    !state.tags.length &&
+    !state.dateFrom &&
+    !state.dateTo;
+
   openWeekPosterButton.classList.toggle("is-active", state.period === "week");
   openMonthPosterButton.classList.toggle("is-active", state.period === "month");
+  openAllEventsButton.classList.toggle("is-active", allFiltersInactive);
 }
 
 function applyHeroPeriodFilter(period) {
@@ -546,43 +722,64 @@ function applyHeroPeriodFilter(period) {
   }
 }
 
+function resetCatalogFilters({ scroll = false } = {}) {
+  state.format = [];
+  state.audience = [];
+  state.district = [];
+  state.query = "";
+  state.tags = [];
+  state.dateFrom = "";
+  state.dateTo = "";
+  state.period = "all";
+  setFilterSelections(formatFilter, []);
+  setFilterSelections(audienceFilter, []);
+  setFilterSelections(districtFilter, []);
+  dateFromFilter.value = "";
+  dateToFilter.value = "";
+  searchInput.value = "";
+  render();
+
+  if (scroll && dashboardGrid) {
+    dashboardGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function renderFilterGroup(filterElement, values, selectedValues) {
+  filterElement.innerHTML = "";
+
+  values.forEach((value) => {
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.value = value;
+    input.checked = selectedValues.includes(value);
+
+    label.append(input, document.createTextNode(` ${value}`));
+    filterElement.append(label);
+  });
+}
+
 function populateFilters() {
-  formatFilter.innerHTML = `<option value="all">Все форматы</option>`;
-  audienceFilter.innerHTML = `<option value="all">Все аудитории</option>`;
-  districtFilter.innerHTML = `<option value="all">Все районы</option>`;
-
-  uniq(events.flatMap((event) => parseMultiValue(event.format))).forEach((value) => {
-    formatFilter.insertAdjacentHTML(
-      "beforeend",
-      `<option value="${value}">${value}</option>`
-    );
-  });
-
-  uniq(events.flatMap((event) => parseMultiValue(event.audience))).forEach((value) => {
-    audienceFilter.insertAdjacentHTML(
-      "beforeend",
-      `<option value="${value}">${value}</option>`
-    );
-  });
-
-  uniq(events.map((event) => event.district)).forEach((value) => {
-    districtFilter.insertAdjacentHTML(
-      "beforeend",
-      `<option value="${value}">${value}</option>`
-    );
-  });
+  renderFilterGroup(formatFilter, uniq(events.flatMap((event) => parseMultiValue(event.format))), state.format);
+  renderFilterGroup(audienceFilter, uniq(events.flatMap((event) => parseMultiValue(event.audience))), state.audience);
+  renderFilterGroup(districtFilter, uniq(events.map((event) => event.district)), state.district);
 }
 
 function renderTags() {
   tagCloud.innerHTML = "";
+  tagCloud.classList.toggle("is-hidden", !state.tagsExpanded);
+  toggleTagsButton.textContent = state.tagsExpanded ? "Скрыть теги" : "Показать теги";
+  toggleTagsButton.setAttribute("aria-expanded", String(state.tagsExpanded));
 
-  featuredTags.forEach((tag) => {
+  uniq([...featuredTags, ...events.flatMap((event) => event.tags || [])]).forEach((tag) => {
     const button = document.createElement("button");
-    button.className = `tag${state.tag === tag ? " active" : ""}`;
+    button.className = `tag${state.tags.includes(tag) ? " active" : ""}`;
     button.type = "button";
     button.textContent = tag;
     button.addEventListener("click", () => {
-      state.tag = state.tag === tag ? "" : tag;
+      state.tags = state.tags.includes(tag)
+        ? state.tags.filter((selectedTag) => selectedTag !== tag)
+        : [...state.tags, tag];
       render();
     });
     tagCloud.append(button);
@@ -604,11 +801,12 @@ function matchesFilters(event) {
     .toLowerCase();
 
   return (
-    (state.format === "all" || parseMultiValue(event.format).includes(state.format)) &&
-    (state.audience === "all" || parseMultiValue(event.audience).includes(state.audience)) &&
-    (state.district === "all" || event.district === state.district) &&
-    (!state.tag || event.tags.includes(state.tag)) &&
+    valuesMatchAny(event.format, state.format) &&
+    valuesMatchAny(event.audience, state.audience) &&
+    (!state.district.length || state.district.includes(event.district)) &&
+    (!state.tags.length || state.tags.some((tag) => event.tags.includes(tag))) &&
     (!query || haystack.includes(query)) &&
+    matchesDateFilter(event) &&
     matchesPeriod(event)
   );
 }
@@ -635,6 +833,9 @@ function renderCards(filteredEvents) {
     article.className = `event-card${state.activeId === event.id ? " active" : ""}`;
     article.tabIndex = 0;
     article.innerHTML = `
+      <div class="event-card-media">
+        ${renderGeneratedPosterImage(event, "generated-card-image")}
+      </div>
       <div class="event-topline">
         <span class="event-date">${event.date}</span>
         <span class="event-pill">${getEventStatusLabel(event)}</span>
@@ -671,20 +872,48 @@ function renderCards(filteredEvents) {
 }
 
 function renderCalendar(filteredEvents) {
-  calendarList.innerHTML = filteredEvents
-    .slice(0, 5)
-    .map(
-      (event) => `
-        <article class="calendar-item" data-event-id="${event.id}" tabindex="0">
-          <strong>${event.date}</strong>
-          <p>${event.title}</p>
-          <p>${event.venue}</p>
+  const start = getCalendarWeekStart(filteredEvents);
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+    return date;
+  });
+
+  calendarList.innerHTML = days
+    .map((date) => {
+      const dateKey = getEventDateOnly({ isoDate: date.toISOString() });
+      const dayEvents = filteredEvents
+        .filter((eventItem) => eventItem.format !== "Сервис" && getEventDateOnly(eventItem) === dateKey)
+        .sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+
+      return `
+        <article class="calendar-day${dayEvents.length ? " has-events" : ""}">
+          <div class="calendar-day-head">
+            <span>${formatCalendarWeekday(date)}</span>
+            <strong>${formatCalendarDay(date)}</strong>
+          </div>
+          <div class="calendar-day-events">
+            ${
+              dayEvents.length
+                ? dayEvents
+                    .map(
+                      (eventItem) => `
+                        <button class="calendar-event" data-event-id="${eventItem.id}" type="button">
+                          <span>${eventItem.date.split(", ").at(-1) || eventItem.date}</span>
+                          ${eventItem.title}
+                        </button>
+                      `
+                    )
+                    .join("")
+                : `<p class="calendar-empty">Нет событий</p>`
+            }
+          </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 
-  calendarList.querySelectorAll(".calendar-item").forEach((item) => {
+  calendarList.querySelectorAll(".calendar-event").forEach((item) => {
     const { eventId } = item.dataset;
 
     item.addEventListener("click", () => {
@@ -692,192 +921,45 @@ function renderCalendar(filteredEvents) {
       render();
       openEventModal(eventId);
     });
-
-    item.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        state.activeId = eventId;
-        render();
-        openEventModal(eventId);
-      }
-    });
   });
 }
 
 function renderPosterCard(eventItem) {
-  const primaryFormat = getPrimaryValue(eventItem.format, "Событие");
-  const thematicIllustrationMap = {
-    health: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="62" cy="62" r="30" fill="rgba(46, 179, 152, 0.18)"></circle>
-        <path d="M62 46V78" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M46 62H78" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M120 118C144 88 164 72 190 62" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="194" cy="60" r="16" fill="#bd536d"></circle>
-      </svg>
-    `,
-    dance: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="72" cy="46" r="18" fill="#2eb398"></circle>
-        <path d="M72 68L108 96L142 82" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M108 96L88 138" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M112 94L156 136" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M142 82L178 48" fill="none" stroke="#2eb398" stroke-width="12" stroke-linecap="round"></path>
-      </svg>
-    `,
-    digital: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <rect x="52" y="38" width="84" height="104" rx="18" fill="rgba(46, 179, 152, 0.14)"></rect>
-        <rect x="68" y="58" width="52" height="8" rx="4" fill="#165849"></rect>
-        <rect x="68" y="76" width="40" height="8" rx="4" fill="#2eb398"></rect>
-        <circle cx="94" cy="116" r="10" fill="#800036"></circle>
-        <path d="M150 62H192" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M150 94H180" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
-      </svg>
-    `,
-    family: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="72" cy="60" r="18" fill="#800036"></circle>
-        <circle cx="116" cy="74" r="14" fill="#2eb398"></circle>
-        <path d="M58 110C58 92 70 82 88 82C106 82 118 92 118 110" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M104 118C104 104 114 96 128 96C142 96 152 104 152 118" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M152 58L170 40L188 58" fill="none" stroke="#2eb398" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    `,
-    music: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <path d="M76 40V122" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="66" cy="130" r="18" fill="#bd536d"></circle>
-        <path d="M150 48V102" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="140" cy="110" r="18" fill="#2eb398"></circle>
-        <path d="M76 40C116 52 140 56 184 48" fill="none" stroke="#800036" stroke-width="10" stroke-linecap="round"></path>
-      </svg>
-    `,
-    walk: `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <path d="M42 132C72 96 102 76 140 62C164 54 182 54 198 64" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="48" cy="132" r="16" fill="#2eb398"></circle>
-        <circle cx="198" cy="64" r="16" fill="#800036"></circle>
-        <path d="M118 34L126 50L144 52L130 64L134 82L118 72L102 82L106 64L92 52L110 50Z" fill="rgba(189, 83, 109, 0.24)"></path>
-      </svg>
-    `
-  };
-
-  const illustrationMap = {
-    "Лекция": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="58" cy="54" r="28" fill="rgba(46, 179, 152, 0.18)"></circle>
-        <rect x="104" y="34" width="90" height="62" rx="14" fill="rgba(128, 0, 54, 0.12)"></rect>
-        <rect x="116" y="48" width="66" height="8" rx="4" fill="#800036"></rect>
-        <rect x="116" y="64" width="52" height="8" rx="4" fill="#2eb398"></rect>
-        <path d="M42 138L72 100L104 138" fill="none" stroke="#165849" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M124 128H194" stroke="#165849" stroke-width="10" stroke-linecap="round"></path>
-      </svg>
-    `,
-    "Мастер-класс": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="70" cy="72" r="34" fill="rgba(46, 179, 152, 0.16)"></circle>
-        <path d="M104 116C132 88 154 78 194 58" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="196" cy="56" r="16" fill="#bd536d"></circle>
-        <path d="M54 124L96 82" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M44 80L64 100" fill="none" stroke="#2eb398" stroke-width="12" stroke-linecap="round"></path>
-      </svg>
-    `,
-    "Практикум": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <rect x="40" y="34" width="72" height="96" rx="18" fill="rgba(46, 179, 152, 0.14)"></rect>
-        <rect x="58" y="56" width="36" height="8" rx="4" fill="#165849"></rect>
-        <rect x="58" y="76" width="28" height="8" rx="4" fill="#800036"></rect>
-        <rect x="58" y="96" width="22" height="8" rx="4" fill="#2eb398"></rect>
-        <path d="M146 56L194 104" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M194 56L146 104" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-      </svg>
-    `,
-    "Спорт": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="72" cy="48" r="18" fill="#2eb398"></circle>
-        <path d="M70 70L102 96L134 78" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M102 96L88 138" fill="none" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M106 96L146 140" fill="none" stroke="#bd536d" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="182" cy="120" r="22" fill="rgba(128, 0, 54, 0.14)"></circle>
-      </svg>
-    `,
-    "Концерт": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <path d="M74 42V122" stroke="#800036" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="64" cy="130" r="18" fill="#bd536d"></circle>
-        <path d="M146 42V98" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="136" cy="106" r="18" fill="#2eb398"></circle>
-        <path d="M74 42C112 54 134 58 174 52" fill="none" stroke="#800036" stroke-width="10" stroke-linecap="round"></path>
-      </svg>
-    `,
-    "Экскурсия": `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <path d="M48 132C74 96 98 74 136 60C162 50 182 52 198 64" fill="none" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-        <circle cx="54" cy="132" r="16" fill="#2eb398"></circle>
-        <circle cx="198" cy="64" r="16" fill="#800036"></circle>
-        <path d="M120 38L132 62L158 66L138 84L144 110L120 96L96 110L102 84L82 66L108 62Z" fill="rgba(189, 83, 109, 0.22)"></path>
-      </svg>
-    `
-  };
-
-  const illustrationHints = [
-    eventItem.title,
-    eventItem.summary,
-    eventItem.description,
-    formatMultiValue(eventItem.format),
-    ...(eventItem.tags || [])
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  let thematicIllustrationKey = "";
-
-  if (/(здоров|дыхани|памят|курени|спорт|самочувств)/.test(illustrationHints)) {
-    thematicIllustrationKey = "health";
-  } else if (/(танц|ритм|движени|бал)/.test(illustrationHints)) {
-    thematicIllustrationKey = "dance";
-  } else if (/(цифр|онлайн|сервис|техн|интернет|гаджет)/.test(illustrationHints)) {
-    thematicIllustrationKey = "digital";
-  } else if (/(семь|внук|бабушк|дет|межпоколен)/.test(illustrationHints)) {
-    thematicIllustrationKey = "family";
-  } else if (/(концерт|музык|песн|вокал|мелод)/.test(illustrationHints)) {
-    thematicIllustrationKey = "music";
-  } else if (/(прогул|экскурс|город|маршрут|истори)/.test(illustrationHints)) {
-    thematicIllustrationKey = "walk";
-  }
-
-  const illustration =
-    thematicIllustrationMap[thematicIllustrationKey] ||
-    illustrationMap[primaryFormat] ||
-    `
-      <svg class="poster-illustration" viewBox="0 0 240 180" aria-hidden="true">
-        <circle cx="70" cy="64" r="34" fill="rgba(46, 179, 152, 0.16)"></circle>
-        <rect x="118" y="44" width="70" height="70" rx="18" fill="rgba(128, 0, 54, 0.12)"></rect>
-        <path d="M86 126H186" stroke="#165849" stroke-width="12" stroke-linecap="round"></path>
-      </svg>
-    `;
-
   return `
     <article class="poster-card">
-      <div class="poster-topline">
+      <button
+        class="poster-hero"
+        type="button"
+        data-action="open-image-preview"
+        data-image-src="${escapeAttribute(buildGeneratedPosterImageUrl(eventItem))}"
+        data-image-alt="Полное изображение события ${escapeAttribute(eventItem.title)}"
+        aria-label="Открыть полное изображение события"
+      >
+        ${renderGeneratedPosterImage(eventItem)}
         <span class="poster-badge">Московское долголетие</span>
         <span class="poster-format">${formatMultiValue(eventItem.format)}</span>
-      </div>
-      <div class="poster-body">
-        <div class="poster-copy">
-          <p class="poster-date">${eventItem.date}</p>
-          <h4 class="poster-title">${eventItem.title}</h4>
-          <p class="poster-venue">${eventItem.venue}</p>
-          <p class="poster-audience">${formatMultiValue(eventItem.audience)}</p>
+      </button>
+      <div class="poster-content">
+        <p class="poster-date">${eventItem.date}</p>
+        <h4 class="poster-title">${eventItem.title}</h4>
+        <div class="poster-meta-grid">
+          <p class="poster-meta-item">
+            <span>Место</span>
+            ${eventItem.venue}
+          </p>
+          <p class="poster-meta-item">
+            <span>Аудитория</span>
+            ${formatMultiValue(eventItem.audience)}
+          </p>
+          <p class="poster-meta-item">
+            <span>Район</span>
+            ${eventItem.district}
+          </p>
+          <p class="poster-meta-item accent">
+            <span>Публикация</span>
+            #МосковскоеДолголетие
+          </p>
         </div>
-        <div class="poster-art">
-          ${illustration}
-        </div>
-      </div>
-      <div class="poster-footer">
-        <span>${eventItem.district}</span>
-        <span>#МосковскоеДолголетие</span>
       </div>
     </article>
   `;
@@ -933,15 +1015,6 @@ function renderDetail(filteredEvents) {
       <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
         Экспорт в PDF
       </button>
-      ${
-        canCompleteEvent(current)
-          ? `
-            <button class="primary-button" type="button" data-action="complete-event" data-event-id="${current.id}">
-              Завершить событие
-            </button>
-          `
-          : ""
-      }
     </div>
 
     <div class="detail-columns">
@@ -1009,15 +1082,6 @@ function renderEventModal() {
       <button class="secondary-outline-button" type="button" data-action="export-event" data-event-id="${current.id}">
         Экспорт в PDF
       </button>
-      ${
-        canCompleteEvent(current)
-          ? `
-            <button class="primary-button" type="button" data-action="complete-event" data-event-id="${current.id}">
-              Завершить событие
-            </button>
-          `
-          : ""
-      }
       <button class="secondary-outline-button" type="button" data-action="toggle-report" data-event-id="${current.id}">
         Добавить отчёт по фото
       </button>
@@ -1081,7 +1145,18 @@ function renderEventModal() {
 
         <div class="report-actions">
           <p id="reportStatus" class="form-status" aria-live="polite"></p>
-          <button class="primary-button" type="submit">Сохранить отчёт</button>
+          <div class="report-buttons">
+            ${
+              canCompleteEvent(current)
+                ? `
+                  <button class="danger-button" type="button" data-action="complete-event" data-event-id="${current.id}">
+                    Закрыть событие
+                  </button>
+                `
+                : ""
+            }
+            <button class="primary-button" type="submit">Сохранить отчёт</button>
+          </div>
         </div>
       </form>
     </section>
@@ -1300,6 +1375,20 @@ function closeEventModal() {
   document.body.style.overflow = submissionModal.hidden ? "" : "hidden";
 }
 
+function openImagePreview(imageSrc, imageAlt) {
+  imagePreview.src = imageSrc;
+  imagePreview.alt = imageAlt || "Полное изображение события";
+  imagePreviewModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeImagePreview() {
+  imagePreviewModal.hidden = true;
+  imagePreview.removeAttribute("src");
+  imagePreview.alt = "Полное изображение события";
+  document.body.style.overflow = eventModal.hidden && submissionModal.hidden ? "" : "hidden";
+}
+
 function exportEventAnnouncement(eventId) {
   const current = getEventById(eventId);
 
@@ -1514,7 +1603,7 @@ function completeEvent(eventId) {
   }
 
   current.completed = true;
-  current.status = "Завершено";
+  current.status = "Закрыто";
   render();
 
   if (!eventModal.hidden) {
@@ -1576,7 +1665,7 @@ function saveEventReport(event) {
   current.reportLink = reportLinkValue || current.reportLink || "";
   current.postEvent = "Фотоотчёт и итоговые материалы добавлены в карточку события.";
   current.completed = false;
-  current.status = hasEventReport(current) ? "Готово к завершению" : current.status;
+  current.status = canCompleteEvent(current) ? "Готово к закрытию" : getEventStatusLabel(current);
 
   render();
   renderEventModal();
@@ -1668,12 +1757,16 @@ function createAnnouncementFromForm(event) {
   }
 
   state.activeId = currentEventId;
-  state.format = "all";
-  state.audience = "all";
-  state.district = "all";
+  state.format = [];
+  state.audience = [];
+  state.district = [];
   state.query = "";
-  state.tag = "";
+  state.tags = [];
+  state.dateFrom = "";
+  state.dateTo = "";
   searchInput.value = "";
+  dateFromFilter.value = "";
+  dateToFilter.value = "";
   resetSubmissionFormState();
   successBanner.hidden = false;
   successBanner.textContent = state.editingId
@@ -1688,18 +1781,45 @@ function createAnnouncementFromForm(event) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-formatFilter.addEventListener("change", (event) => {
-  state.format = event.target.value;
+formatFilter.addEventListener("change", () => {
+  state.format = getFilterSelections(formatFilter);
   render();
 });
 
-audienceFilter.addEventListener("change", (event) => {
-  state.audience = event.target.value;
+audienceFilter.addEventListener("change", () => {
+  state.audience = getFilterSelections(audienceFilter);
   render();
 });
 
-districtFilter.addEventListener("change", (event) => {
-  state.district = event.target.value;
+districtFilter.addEventListener("change", () => {
+  state.district = getFilterSelections(districtFilter);
+  render();
+});
+
+toggleTagsButton.addEventListener("click", () => {
+  state.tagsExpanded = !state.tagsExpanded;
+  render();
+});
+
+dateFromFilter.addEventListener("change", (event) => {
+  state.dateFrom = event.target.value;
+
+  if (state.dateTo && state.dateFrom > state.dateTo) {
+    state.dateTo = state.dateFrom;
+    dateToFilter.value = state.dateTo;
+  }
+
+  render();
+});
+
+dateToFilter.addEventListener("change", (event) => {
+  state.dateTo = event.target.value;
+
+  if (state.dateFrom && state.dateTo && state.dateTo < state.dateFrom) {
+    state.dateFrom = state.dateTo;
+    dateFromFilter.value = state.dateFrom;
+  }
+
   render();
 });
 
@@ -1709,17 +1829,7 @@ searchInput.addEventListener("input", (event) => {
 });
 
 resetFiltersButton.addEventListener("click", () => {
-  state.format = "all";
-  state.audience = "all";
-  state.district = "all";
-  state.query = "";
-  state.tag = "";
-  state.period = "all";
-  formatFilter.value = "all";
-  audienceFilter.value = "all";
-  districtFilter.value = "all";
-  searchInput.value = "";
-  render();
+  resetCatalogFilters();
 });
 
 openSubmissionFormButton.addEventListener("click", openCreateModal);
@@ -1728,6 +1838,9 @@ openWeekPosterButton.addEventListener("click", () => {
 });
 openMonthPosterButton.addEventListener("click", () => {
   applyHeroPeriodFilter(state.period === "month" ? "all" : "month");
+});
+openAllEventsButton.addEventListener("click", () => {
+  resetCatalogFilters({ scroll: true });
 });
 closeSubmissionFormButton.addEventListener("click", closeModal);
 cancelSubmissionButton.addEventListener("click", closeModal);
@@ -1751,6 +1864,12 @@ eventModalBody.addEventListener("click", (event) => {
   const exportButton = event.target.closest('[data-action="export-event"]');
   const completeButton = event.target.closest('[data-action="complete-event"]');
   const reportButton = event.target.closest('[data-action="toggle-report"]');
+  const imagePreviewButton = event.target.closest('[data-action="open-image-preview"]');
+
+  if (imagePreviewButton) {
+    openImagePreview(imagePreviewButton.dataset.imageSrc, imagePreviewButton.dataset.imageAlt);
+    return;
+  }
 
   if (editButton) {
     closeEventModal();
@@ -1775,6 +1894,12 @@ eventModalBody.addEventListener("click", (event) => {
 detailPanel.addEventListener("click", (event) => {
   const exportButton = event.target.closest('[data-action="export-event"]');
   const completeButton = event.target.closest('[data-action="complete-event"]');
+  const imagePreviewButton = event.target.closest('[data-action="open-image-preview"]');
+
+  if (imagePreviewButton) {
+    openImagePreview(imagePreviewButton.dataset.imageSrc, imagePreviewButton.dataset.imageAlt);
+    return;
+  }
 
   if (exportButton) {
     exportEventAnnouncement(exportButton.dataset.eventId);
@@ -1794,8 +1919,16 @@ eventModalBody.addEventListener("change", (event) => {
     updateReportPreview();
   }
 });
+closeImagePreviewButton.addEventListener("click", closeImagePreview);
+imagePreviewModal.addEventListener("click", (event) => {
+  if (event.target.dataset.closeImagePreview === "true") {
+    closeImagePreview();
+  }
+});
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !submissionModal.hidden) {
+  if (event.key === "Escape" && !imagePreviewModal.hidden) {
+    closeImagePreview();
+  } else if (event.key === "Escape" && !submissionModal.hidden) {
     closeModal();
   } else if (event.key === "Escape" && !eventModal.hidden) {
     closeEventModal();
