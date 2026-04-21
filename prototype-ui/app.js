@@ -315,6 +315,216 @@ const events = [
     metrics: "Ожидаемая посещаемость: 16 семей"
   },
   {
+    id: "EV-017",
+    title: "Продуктовая лаборатория: маршрут активного мая",
+    date: "5 мая, 11:00",
+    isoDate: "2026-05-05T11:00:00",
+    venue: "ЦМД Преображенское",
+    district: "ВАО",
+    format: "Продукт",
+    audience: "Сотрудники, Участники 55+",
+    summary:
+      "Открытая встреча, где участники тестируют идею майского трека занятий и помогают собрать понятный маршрут активности.",
+    description:
+      "Команда проекта покажет прототип сезонного маршрута: короткие занятия, городские точки, цифровые подсказки и простую систему отметок. Участники смогут пройти демо-сценарий, сказать, что удобно, а что стоит упростить перед запуском.",
+    tags: ["продукт", "маршрут", "тестирование", "май"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist product lab poster for Moscow Longevity, active May route prototype, seniors and staff testing a journey map, emerald turquoise ruby white palette, clean civic design, soft light, no text",
+    registration: "Запись через администратора ЦМД",
+    postEvent: "После встречи будут собраны комментарии участников и список улучшений продукта.",
+    metrics: "Ожидаемая посещаемость: 25 человек"
+  },
+  {
+    id: "EV-018",
+    title: "Городской пикник памяти: истории любимых дворов",
+    date: "7 мая, 15:00",
+    isoDate: "2026-05-07T15:00:00",
+    venue: "Парк Северное Тушино",
+    district: "СЗАО",
+    format: "Городское мероприятие",
+    audience: "Участники 55+, Семьи",
+    summary:
+      "Неспешная городская встреча на открытом воздухе с рассказами жителей, мини-маршрутом и семейными фотографиями.",
+    description:
+      "Гости соберутся в парке, чтобы вспомнить дворы, улицы и маленькие городские привычки, которые делают район близким. В программе короткая прогулка, живая запись историй и тёплая зона общения для старших и младших.",
+    tags: ["городское мероприятие", "истории", "парк", "семьи"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist city picnic poster for older adults and families in a Moscow park, warm storytelling mood, emerald turquoise ruby palette, modern civic illustration, no text, soft spring light",
+    registration: "Свободное участие, сбор у главного входа",
+    postEvent: "После события появятся фото маршрута и подборка коротких историй жителей.",
+    metrics: "Ожидаемая посещаемость: 55 человек"
+  },
+  {
+    id: "EV-019",
+    title: "Партнёрский день здоровья: спокойная диагностика привычек",
+    date: "9 мая, 12:00",
+    isoDate: "2026-05-09T12:00:00",
+    venue: "ЦМД Хорошёво-Мнёвники",
+    district: "СЗАО",
+    format: "Партнёрское мероприятие",
+    audience: "Участники 55+",
+    summary:
+      "Партнёрская встреча с мягкой проверкой ежедневных привычек, консультациями и персональными рекомендациями без сложной терминологии.",
+    description:
+      "Специалисты партнёрской организации помогут участникам посмотреть на сон, питание, движение и самочувствие как на единую систему. Каждый получит простую памятку с шагами, которые можно внедрить уже на этой неделе.",
+    tags: ["партнёрское мероприятие", "здоровье", "консультация", "привычки"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist partner health day poster for Moscow Longevity, gentle wellbeing consultation, caring professionals and seniors, emerald turquoise ruby white palette, clean composition, no text",
+    registration: "Предварительная запись у стойки информации",
+    postEvent: "После встречи партнёр передаст обезличенную статистику запросов и фотоотчёт.",
+    metrics: "Ожидаемая посещаемость: 40 человек"
+  },
+  {
+    id: "EV-020",
+    title: "Продуктовый разбор: как сделать запись на занятия проще",
+    date: "12 мая, 10:30",
+    isoDate: "2026-05-12T10:30:00",
+    venue: "ЦМД Якиманка",
+    district: "ЦАО",
+    format: "Продукт",
+    audience: "Сотрудники, Участники 55+",
+    summary:
+      "Практическая сессия по улучшению записи на занятия: участники проходят путь пользователя и отмечают сложные места.",
+    description:
+      "На встрече разберут сценарий записи от первого интереса до подтверждения участия. Участники попробуют несколько экранов, сравнят варианты формулировок и помогут выбрать более человечный язык для будущего сервиса.",
+    tags: ["продукт", "запись", "сервис", "исследование"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist UX research poster for Moscow Longevity, seniors testing event registration flow with staff, clean interface motifs, emerald turquoise ruby palette, respectful modern design, no text",
+    registration: "Регистрация по внутренней ссылке",
+    postEvent: "После сессии появится карта пользовательского пути и перечень точек улучшения.",
+    metrics: "Ожидаемая посещаемость: 18 человек"
+  },
+  {
+    id: "EV-021",
+    title: "Городская зарядка у воды: майское утро на набережной",
+    date: "14 мая, 09:00",
+    isoDate: "2026-05-14T09:00:00",
+    venue: "Крымская набережная",
+    district: "ЦАО",
+    format: "Городское мероприятие",
+    audience: "Участники 55+, Смешанная",
+    summary:
+      "Открытая утренняя зарядка на набережной с мягкой разминкой, дыханием и короткой прогулкой после занятия.",
+    description:
+      "Инструктор проведёт спокойный комплекс упражнений, который подходит для разного уровня подготовки. После занятия группа пройдёт небольшой маршрут вдоль воды, чтобы закрепить бодрый ритм и познакомиться с соседями по проекту.",
+    tags: ["городское мероприятие", "движение", "набережная", "утро"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist morning exercise poster on Moscow embankment, active seniors by the water, emerald turquoise ruby palette, airy spring atmosphere, clean civic illustration, no text",
+    registration: "Свободный вход, спортивная форма по погоде",
+    postEvent: "После события будут добавлены общие фото и отметка о маршруте прогулки.",
+    metrics: "Ожидаемая посещаемость: 70 человек"
+  },
+  {
+    id: "EV-022",
+    title: "Партнёрская мастерская: умный дом без тревоги",
+    date: "16 мая, 13:30",
+    isoDate: "2026-05-16T13:30:00",
+    venue: "ЦМД Кунцево",
+    district: "ЗАО",
+    format: "Партнёрское мероприятие",
+    audience: "Участники 55+, Семьи",
+    summary:
+      "Демонстрация простых домашних технологий: датчики, голосовые помощники и сценарии безопасности понятным языком.",
+    description:
+      "Партнёр покажет, как современные устройства могут помогать в быту без лишней сложности. Участники увидят живые примеры, зададут вопросы и попробуют настроить безопасный сценарий для дома или квартиры.",
+    tags: ["партнёрское мероприятие", "технологии", "дом", "безопасность"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist smart home workshop poster for seniors and families, simple safe home technology, caring partner demo, emerald turquoise ruby white palette, clean modern illustration, no text",
+    registration: "Запись по телефону площадки",
+    postEvent: "После мастерской будут опубликованы фото демонстрации и список полезных сценариев.",
+    metrics: "Ожидаемая посещаемость: 30 человек"
+  },
+  {
+    id: "EV-023",
+    title: "Продуктовый клуб: календарь привычек для активного лета",
+    date: "19 мая, 16:00",
+    isoDate: "2026-05-19T16:00:00",
+    venue: "ЦМД Нагатино-Садовники",
+    district: "ЮАО",
+    format: "Продукт",
+    audience: "Участники 55+, Сотрудники",
+    summary:
+      "Совместная сборка календаря привычек: участники выбирают темы, ритм напоминаний и удобный формат отслеживания прогресса.",
+    description:
+      "Встреча поможет понять, какой календарь действительно хочется открывать каждый день. Участники предложат свои ритуалы, проверят макет карточек и выберут поддерживающие формулировки без давления и наставлений.",
+    tags: ["продукт", "календарь", "привычки", "лето"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist habit calendar co-creation poster for Moscow Longevity, seniors choosing weekly activity cards, emerald turquoise ruby palette, warm product workshop mood, no text",
+    registration: "По предварительной записи через ЦМД",
+    postEvent: "После клуба команда соберёт прототип календаря и список выбранных привычек.",
+    metrics: "Ожидаемая посещаемость: 22 человека"
+  },
+  {
+    id: "EV-024",
+    title: "Городской вечер во дворе: хор, чай и соседские знакомства",
+    date: "22 мая, 18:00",
+    isoDate: "2026-05-22T18:00:00",
+    venue: "Дворовая сцена района Лианозово",
+    district: "СВАО",
+    format: "Городское мероприятие",
+    audience: "Смешанная, Семьи",
+    summary:
+      "Вечерний дворик с хоровым выступлением, чаепитием и короткой программой для знакомства жителей разных поколений.",
+    description:
+      "Событие создаёт спокойную городскую атмосферу рядом с домом: знакомые песни, общий стол, маленькие истории соседей и возможность договориться о новых клубных встречах. Формат рассчитан на лёгкое включение без регистрации в сложные формы.",
+    tags: ["городское мероприятие", "двор", "музыка", "соседи"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist neighborhood courtyard evening poster, choir tea and intergenerational community, emerald turquoise ruby palette, warm urban civic design, soft light, no text",
+    registration: "Свободный вход для жителей района",
+    postEvent: "После вечера появятся фотографии дворовой сцены и список идей для следующих встреч.",
+    metrics: "Ожидаемая посещаемость: 90 человек"
+  },
+  {
+    id: "EV-025",
+    title: "Партнёрский кинолекторий: Москва в кадре",
+    date: "26 мая, 17:00",
+    isoDate: "2026-05-26T17:00:00",
+    venue: "Культурный центр ЗИЛ",
+    district: "ЮАО",
+    format: "Партнёрское мероприятие",
+    audience: "Участники 55+, Смешанная",
+    summary:
+      "Кинопоказ с обсуждением городских образов Москвы, личных воспоминаний и того, как менялся ритм районов.",
+    description:
+      "Партнёрский культурный центр подготовит фрагменты фильмов и мягкую модерацию разговора. Участники смогут поделиться своими городскими ассоциациями, вспомнить любимые места и увидеть знакомую Москву под новым углом.",
+    tags: ["партнёрское мероприятие", "кино", "город", "культура"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist cinema lecture poster about Moscow city memories, older adults watching film frames, emerald turquoise ruby white palette, elegant cultural mood, no text",
+    registration: "Регистрация на сайте культурного центра",
+    postEvent: "После кинолектория будут добавлены фото обсуждения и подборка рекомендованных фильмов.",
+    metrics: "Ожидаемая посещаемость: 65 человек"
+  },
+  {
+    id: "EV-026",
+    title: "Городская экспедиция: зелёные маршруты района",
+    date: "29 мая, 11:30",
+    isoDate: "2026-05-29T11:30:00",
+    venue: "Сквер у станции метро Беляево",
+    district: "ЮЗАО",
+    format: "Городское мероприятие",
+    audience: "Участники 55+",
+    summary:
+      "Прогулка-исследование по зелёным точкам района с отметками на карте, наблюдениями и идеями для летних маршрутов.",
+    description:
+      "Участники пройдут короткий маршрут по скверам и тихим улицам, отметят удобные места для отдыха и соберут предложения для будущей районной афиши. Это не экскурсия с лекцией, а совместное внимательное исследование привычной среды.",
+    tags: ["городское мероприятие", "зелёный маршрут", "карта", "прогулка"],
+    status: "Опубликовано",
+    imagePrompt:
+      "Minimalist green neighborhood route poster, seniors exploring parks and mapping quiet streets, emerald turquoise ruby palette, clean civic nature-inspired design, no text",
+    registration: "Запись у администратора ЦМД Ясенево",
+    postEvent: "После экспедиции появится карта точек и фото зелёного маршрута.",
+    metrics: "Ожидаемая посещаемость: 28 человек"
+  },
+  {
     id: "EV-016",
     title: "Подать событие в портал",
     date: "Ежедневно",
@@ -337,6 +547,53 @@ const events = [
   }
 ];
 
+const EVENTS_STORAGE_KEY = "moscowLongevityPortal.events.v1";
+const defaultEvents = JSON.parse(JSON.stringify(events));
+
+function loadPersistedEvents() {
+  try {
+    const persistedEvents = JSON.parse(localStorage.getItem(EVENTS_STORAGE_KEY) || "[]");
+
+    if (!Array.isArray(persistedEvents) || !persistedEvents.length) {
+      return;
+    }
+
+    const persistedById = new Map(persistedEvents.map((eventItem) => [eventItem.id, eventItem]));
+    const mergedEvents = [
+      ...persistedEvents,
+      ...defaultEvents.filter((eventItem) => !persistedById.has(eventItem.id))
+    ];
+
+    events.splice(0, events.length, ...mergedEvents);
+  } catch (error) {
+    console.warn("Не удалось загрузить сохранённые события", error);
+  }
+}
+
+function saveEvents() {
+  try {
+    localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(events));
+  } catch (error) {
+    console.warn("Не удалось сохранить события", error);
+  }
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      resolve({
+        name: file.name,
+        url: reader.result
+      });
+    });
+    reader.addEventListener("error", reject);
+    reader.readAsDataURL(file);
+  });
+}
+
+loadPersistedEvents();
+
 const formatFilter = document.querySelector("#formatFilter");
 const audienceFilter = document.querySelector("#audienceFilter");
 const districtFilter = document.querySelector("#districtFilter");
@@ -348,6 +605,7 @@ const openSubmissionFormButton = document.querySelector("#openSubmissionForm");
 const openWeekPosterButton = document.querySelector("#openWeekPoster");
 const openMonthPosterButton = document.querySelector("#openMonthPoster");
 const openAllEventsButton = document.querySelector("#openAllEvents");
+const openArchiveButton = document.querySelector("#openArchive");
 const closeSubmissionFormButton = document.querySelector("#closeSubmissionForm");
 const cancelSubmissionButton = document.querySelector("#cancelSubmission");
 const submissionModal = document.querySelector("#submissionModal");
@@ -357,8 +615,12 @@ const successBanner = document.querySelector("#successBanner");
 const eventGrid = document.querySelector("#eventGrid");
 const detailPanel = document.querySelector("#detailPanel");
 const calendarList = document.querySelector("#calendarList");
+const todayCard = document.querySelector("#todayCard");
+const tomorrowCard = document.querySelector("#tomorrowCard");
 const visibleCount = document.querySelector("#visibleCount");
 const resultState = document.querySelector("#resultState");
+const sortByDateButton = document.querySelector("#sortByDate");
+const sortByTitleButton = document.querySelector("#sortByTitle");
 const tagCloud = document.querySelector("#tagCloud");
 const toggleTagsButton = document.querySelector("#toggleTags");
 const dashboardGrid = document.querySelector(".dashboard-grid");
@@ -408,6 +670,9 @@ const state = {
   dateFrom: "",
   dateTo: "",
   tagsExpanded: false,
+  todayIndex: 0,
+  tomorrowIndex: 0,
+  sortMode: "date",
   period: "all",
   activeId: events[0].id,
   editingId: null
@@ -548,6 +813,16 @@ function matchesDateFilter(eventItem) {
   return eventDate <= state.dateTo;
 }
 
+function getTodayDateKey() {
+  return getEventDateOnly({ isoDate: new Date().toISOString() });
+}
+
+function getRelativeDateKey(dayOffset) {
+  const date = new Date();
+  date.setDate(date.getDate() + dayOffset);
+  return getEventDateOnly({ isoDate: date.toISOString() });
+}
+
 function formatCalendarDay(date) {
   return new Intl.DateTimeFormat("ru-RU", {
     day: "numeric",
@@ -622,7 +897,7 @@ function getEventStatusLabel(eventItem) {
   }
 
   if (eventItem.completed) {
-    return "Закрыто";
+    return "Архив";
   }
 
   if (hasEventReport(eventItem) && isPastEvent(eventItem)) {
@@ -679,6 +954,10 @@ function getDateRangeForPeriod(period) {
 }
 
 function matchesPeriod(eventItem) {
+  if (state.period === "archive") {
+    return eventItem.format !== "Сервис" && getEventStatusLabel(eventItem) === "Архив";
+  }
+
   if (state.period === "all") {
     return true;
   }
@@ -710,6 +989,7 @@ function syncHeroFilterButtons() {
 
   openWeekPosterButton.classList.toggle("is-active", state.period === "week");
   openMonthPosterButton.classList.toggle("is-active", state.period === "month");
+  openArchiveButton.classList.toggle("is-active", state.period === "archive");
   openAllEventsButton.classList.toggle("is-active", allFiltersInactive);
 }
 
@@ -922,6 +1202,128 @@ function renderCalendar(filteredEvents) {
       openEventModal(eventId);
     });
   });
+}
+
+function getEventsByDateKey(dateKey) {
+  return events
+    .filter((eventItem) => eventItem.format !== "Сервис" && getEventDateOnly(eventItem) === dateKey)
+    .sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+}
+
+function getTodayEvents() {
+  return getEventsByDateKey(getTodayDateKey());
+}
+
+function getTomorrowEvents() {
+  return getEventsByDateKey(getRelativeDateKey(1));
+}
+
+function getCatalogDatePriority(eventItem) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weekEnd = new Date(today);
+  weekEnd.setDate(today.getDate() + 7);
+  weekEnd.setHours(23, 59, 59, 999);
+  const eventDate = new Date(eventItem.isoDate);
+
+  if (Number.isNaN(eventDate.getTime())) {
+    return 3;
+  }
+
+  if (getEventDateOnly(eventItem) === getTodayDateKey()) {
+    return 0;
+  }
+
+  if (eventDate > today && eventDate <= weekEnd) {
+    return 1;
+  }
+
+  return 2;
+}
+
+function sortCatalogEvents(filteredEvents) {
+  const sortedEvents = [...filteredEvents];
+
+  if (state.sortMode === "title") {
+    return sortedEvents.sort((left, right) => left.title.localeCompare(right.title, "ru"));
+  }
+
+  return sortedEvents.sort((left, right) => {
+    const priorityDiff = getCatalogDatePriority(left) - getCatalogDatePriority(right);
+
+    if (priorityDiff !== 0) {
+      return priorityDiff;
+    }
+
+    return new Date(left.isoDate) - new Date(right.isoDate);
+  });
+}
+
+function renderDayCard(cardElement, dayEvents, stateKey, label, emptyTitle, emptyCopy) {
+  if (!dayEvents.length) {
+    state[stateKey] = 0;
+    cardElement.innerHTML = `
+      <p class="eyebrow">${label}</p>
+      <h3>${emptyTitle}</h3>
+      <p>${emptyCopy}</p>
+    `;
+    return;
+  }
+
+  if (state[stateKey] >= dayEvents.length) {
+    state[stateKey] = 0;
+  }
+
+  const current = dayEvents[state[stateKey]];
+
+  cardElement.innerHTML = `
+    <div class="today-card-head">
+      <p class="eyebrow">${label}</p>
+      ${
+        dayEvents.length > 1
+          ? `<span class="today-counter">${state[stateKey] + 1} / ${dayEvents.length}</span>`
+          : ""
+      }
+    </div>
+    <button class="today-event-button" type="button" data-event-id="${current.id}">
+      <span>${current.date}</span>
+      <strong>${current.title}</strong>
+      <small>${current.venue}, ${current.district}</small>
+      <em>${current.summary}</em>
+    </button>
+    ${
+      dayEvents.length > 1
+        ? `
+          <div class="today-controls">
+            <button type="button" data-action="day-prev" data-state-key="${stateKey}">Предыдущее</button>
+            <button type="button" data-action="day-next" data-state-key="${stateKey}">Следующее</button>
+          </div>
+        `
+        : ""
+    }
+  `;
+}
+
+function renderTodayCard() {
+  renderDayCard(
+    todayCard,
+    getTodayEvents(),
+    "todayIndex",
+    "Сегодня",
+    "На сегодня событий нет",
+    "Когда в каталоге появится мероприятие с сегодняшней датой, оно отобразится здесь."
+  );
+}
+
+function renderTomorrowCard() {
+  renderDayCard(
+    tomorrowCard,
+    getTomorrowEvents(),
+    "tomorrowIndex",
+    "Завтра",
+    "На завтра событий нет",
+    "Когда в каталоге появится мероприятие с завтрашней датой, оно отобразится здесь."
+  );
 }
 
 function renderPosterCard(eventItem) {
@@ -1165,20 +1567,26 @@ function renderEventModal() {
 
 function renderCounters(filteredEvents) {
   visibleCount.textContent = String(filteredEvents.length);
+  sortByDateButton.classList.toggle("is-active", state.sortMode === "date");
+  sortByTitleButton.classList.toggle("is-active", state.sortMode === "title");
   const periodLabel =
     state.period === "week"
       ? " за неделю"
       : state.period === "month"
         ? " за месяц"
-        : "";
+        : state.period === "archive"
+          ? " в архиве"
+          : "";
   resultState.textContent = `${filteredEvents.length} событий${periodLabel}`;
 }
 
 function render() {
-  const filteredEvents = getFilteredEvents();
+  const filteredEvents = sortCatalogEvents(getFilteredEvents());
   populateFilters();
   renderTags();
   syncHeroFilterButtons();
+  renderTodayCard();
+  renderTomorrowCard();
   renderCounters(filteredEvents);
   renderCards(filteredEvents);
   renderCalendar(filteredEvents);
@@ -1603,7 +2011,8 @@ function completeEvent(eventId) {
   }
 
   current.completed = true;
-  current.status = "Закрыто";
+  current.status = "Архив";
+  saveEvents();
   render();
 
   if (!eventModal.hidden) {
@@ -1640,7 +2049,7 @@ function updateReportPreview() {
   );
 }
 
-function saveEventReport(event) {
+async function saveEventReport(event) {
   event.preventDefault();
 
   const current = getEventById(state.activeId);
@@ -1654,10 +2063,9 @@ function saveEventReport(event) {
 
   const selectedFiles = Array.from(reportFilesInput.files || []);
   const fileNames = selectedFiles.map((file) => file.name);
-  const photoPreviews = selectedFiles.map((file) => ({
-    name: file.name,
-    url: URL.createObjectURL(file)
-  }));
+  const photoPreviews = selectedFiles.length
+    ? await Promise.all(selectedFiles.map(readFileAsDataUrl))
+    : [];
   const reportLinkValue = reportLinkInput.value.trim();
 
   current.reportFiles = fileNames.length ? fileNames : current.reportFiles || [];
@@ -1666,6 +2074,7 @@ function saveEventReport(event) {
   current.postEvent = "Фотоотчёт и итоговые материалы добавлены в карточку события.";
   current.completed = false;
   current.status = canCompleteEvent(current) ? "Готово к закрытию" : getEventStatusLabel(current);
+  saveEvents();
 
   render();
   renderEventModal();
@@ -1756,6 +2165,8 @@ function createAnnouncementFromForm(event) {
     currentEventId = newEvent.id;
   }
 
+  saveEvents();
+
   state.activeId = currentEventId;
   state.format = [];
   state.audience = [];
@@ -1828,6 +2239,16 @@ searchInput.addEventListener("input", (event) => {
   render();
 });
 
+sortByDateButton.addEventListener("click", () => {
+  state.sortMode = "date";
+  render();
+});
+
+sortByTitleButton.addEventListener("click", () => {
+  state.sortMode = "title";
+  render();
+});
+
 resetFiltersButton.addEventListener("click", () => {
   resetCatalogFilters();
 });
@@ -1839,8 +2260,45 @@ openWeekPosterButton.addEventListener("click", () => {
 openMonthPosterButton.addEventListener("click", () => {
   applyHeroPeriodFilter(state.period === "month" ? "all" : "month");
 });
+openArchiveButton.addEventListener("click", () => {
+  applyHeroPeriodFilter(state.period === "archive" ? "all" : "archive");
+});
 openAllEventsButton.addEventListener("click", () => {
   resetCatalogFilters({ scroll: true });
+});
+function handleDayCardClick(event, getDayEvents) {
+  const dayEvents = getDayEvents();
+  const previousButton = event.target.closest('[data-action="day-prev"]');
+  const nextButton = event.target.closest('[data-action="day-next"]');
+  const eventButton = event.target.closest("[data-event-id]");
+
+  if (previousButton && dayEvents.length) {
+    const { stateKey } = previousButton.dataset;
+    state[stateKey] = (state[stateKey] - 1 + dayEvents.length) % dayEvents.length;
+    render();
+    return;
+  }
+
+  if (nextButton && dayEvents.length) {
+    const { stateKey } = nextButton.dataset;
+    state[stateKey] = (state[stateKey] + 1) % dayEvents.length;
+    render();
+    return;
+  }
+
+  if (eventButton) {
+    state.activeId = eventButton.dataset.eventId;
+    render();
+    openEventModal(eventButton.dataset.eventId);
+  }
+}
+
+todayCard.addEventListener("click", (event) => {
+  handleDayCardClick(event, getTodayEvents);
+});
+
+tomorrowCard.addEventListener("click", (event) => {
+  handleDayCardClick(event, getTomorrowEvents);
 });
 closeSubmissionFormButton.addEventListener("click", closeModal);
 cancelSubmissionButton.addEventListener("click", closeModal);

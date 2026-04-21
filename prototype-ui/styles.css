@@ -216,6 +216,33 @@ select {
   gap: 12px;
 }
 
+.catalog-tools {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.sort-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.sort-toggle button {
+  padding: 8px 10px;
+  border: 1px solid rgba(22, 88, 73, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--emerald);
+  cursor: pointer;
+}
+
+.sort-toggle button.is-active {
+  background: var(--emerald);
+  color: var(--white);
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -289,8 +316,15 @@ select {
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 6px;
+  max-height: 184px;
   margin-top: 14px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .tag-cloud.is-hidden {
@@ -314,11 +348,16 @@ select {
 }
 
 .tag {
-  padding: 8px 12px;
+  max-width: 100%;
+  padding: 7px 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
   color: var(--white);
+  font-size: 0.78rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-align: left;
   cursor: pointer;
 }
 
@@ -451,6 +490,7 @@ select {
 }
 
 .hero-period-button,
+.hero-archive-button,
 .secondary-outline-button {
   padding: 13px 18px;
   border: 1px solid rgba(128, 0, 54, 0.18);
@@ -462,14 +502,30 @@ select {
 }
 
 .hero-period-button:hover,
+.hero-archive-button:hover,
 .secondary-outline-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 28px rgba(128, 0, 54, 0.22);
 }
 
 .hero-period-button.is-active,
+.hero-archive-button.is-active,
 .secondary-outline-button.is-active {
   box-shadow: 0 0 0 4px rgba(128, 0, 54, 0.14);
+}
+
+.hero-archive-button {
+  border-color: rgba(98, 112, 108, 0.24);
+  background: #7d8784;
+  box-shadow: 0 10px 24px rgba(98, 112, 108, 0.18);
+}
+
+.hero-archive-button:hover {
+  box-shadow: 0 14px 28px rgba(98, 112, 108, 0.24);
+}
+
+.hero-archive-button.is-active {
+  box-shadow: 0 0 0 4px rgba(98, 112, 108, 0.18);
 }
 
 .hero-submit-button {
@@ -520,7 +576,7 @@ select {
 
 .quick-strip {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 18px;
 }
@@ -530,16 +586,78 @@ select {
   border-radius: var(--radius-lg);
 }
 
+.today-card {
+  display: grid;
+  gap: 10px;
+}
+
+.today-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.today-counter {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(46, 179, 152, 0.12);
+  color: var(--emerald);
+  font-size: 0.76rem;
+}
+
+.today-event-button {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.today-event-button span {
+  color: var(--ruby);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.today-event-button strong {
+  color: var(--emerald);
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.today-event-button small,
+.today-event-button em {
+  color: var(--muted);
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.today-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.today-controls button {
+  padding: 8px 10px;
+  border: 1px solid rgba(22, 88, 73, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--emerald);
+  cursor: pointer;
+}
+
 .strip-card:nth-child(1) h3 {
   color: var(--emerald);
 }
 
 .strip-card:nth-child(2) h3 {
   color: var(--ruby);
-}
-
-.strip-card:nth-child(3) h3 {
-  color: var(--red);
 }
 
 .strip-card p:last-child {

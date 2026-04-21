@@ -107,6 +107,7 @@
               <button id="openWeekPoster" class="hero-period-button" type="button">Афиша недели</button>
               <button id="openMonthPoster" class="hero-period-button secondary-outline-button" type="button">Афиша месяца</button>
               <button id="openAllEvents" class="hero-period-button secondary-outline-button" type="button">Все события</button>
+              <button id="openArchive" class="hero-archive-button" type="button">Архив</button>
               <button id="openSubmissionForm" class="hero-submit-button" type="button">Подать событие</button>
             </div>
             <span id="visibleCount" class="sr-only">0</span>
@@ -114,20 +115,15 @@
         </section>
 
         <section class="quick-strip">
-          <article class="strip-card">
-            <p class="eyebrow">Сегодня в фокусе</p>
-            <h3>Цифровая среда без стресса</h3>
-            <p>Мягкий вход в сервисы, практикум и помощь на месте.</p>
+          <article id="todayCard" class="strip-card today-card">
+            <p class="eyebrow">Сегодня</p>
+            <h3>События дня загружаются</h3>
+            <p>Портал проверяет календарь и покажет актуальные мероприятия.</p>
           </article>
-          <article class="strip-card">
-            <p class="eyebrow">Семейный формат</p>
-            <h3>Бабушка + внук</h3>
-            <p>Совместные события для теплого межпоколенческого контакта.</p>
-          </article>
-          <article class="strip-card">
-            <p class="eyebrow">Пост-ивент</p>
-            <h3>Фото, отзывы, метрики</h3>
-            <p>После завершения событие получает итоговую карточку результата.</p>
+          <article id="tomorrowCard" class="strip-card today-card">
+            <p class="eyebrow">Завтра</p>
+            <h3>События на завтра загружаются</h3>
+            <p>Портал проверяет календарь и покажет ближайшие мероприятия.</p>
           </article>
         </section>
 
@@ -138,7 +134,13 @@
                 <p class="eyebrow">Каталог событий</p>
                 <h3>Ближайшие анонсы</h3>
               </div>
-              <div class="result-state" id="resultState">0 событий</div>
+              <div class="catalog-tools">
+                <div class="result-state" id="resultState">0 событий</div>
+                <div class="sort-toggle" aria-label="Сортировка каталога">
+                  <button id="sortByDate" class="is-active" type="button">по дате</button>
+                  <button id="sortByTitle" type="button">по названию</button>
+                </div>
+              </div>
             </div>
             <div class="cards-grid" id="eventGrid"></div>
           </section>
