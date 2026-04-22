@@ -65,6 +65,16 @@
           <div class="tag-cloud is-hidden" id="tagCloud"></div>
         </section>
 
+        <section class="filter-card sidebar-calendar-card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Календарь</p>
+              <h2>Месяц</h2>
+            </div>
+          </div>
+          <div class="calendar-list" id="calendarList"></div>
+        </section>
+
         <section class="policy-card">
           <p class="eyebrow">Правило системы</p>
           <h3>Нет анонса — нет события</h3>
@@ -79,11 +89,12 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">Локальный prototype</p>
-            <h2>Портал анонсов “Московское долголетие”</h2>
+            <h2>Портал анонсов «Московское долголетие»</h2>
           </div>
 
           <label class="searchbox">
             <span class="sr-only">Поиск по событиям</span>
+            <span class="searchbox-icon" aria-hidden="true">⌕</span>
             <input
               id="searchInput"
               type="search"
@@ -97,21 +108,26 @@
         <section class="hero">
           <div class="hero-copy">
             <p class="eyebrow">Афиша месяца</p>
-            <h3>События проекта "Московское долголетие"</h3>
+            <h3>События проекта «Московское долголетие»</h3>
             <p>
               Демо показывает, как может выглядеть портал на базе Outline: чистая
               брендовая витрина, быстрые подборки, календарный блок и карточка
               события с записью и пост-ивент данными.
             </p>
             <div class="hero-actions">
-              <button id="openWeekPoster" class="hero-period-button" type="button">Афиша недели</button>
-              <button id="openMonthPoster" class="hero-period-button secondary-outline-button" type="button">Афиша месяца</button>
-              <button id="openAllEvents" class="hero-period-button secondary-outline-button" type="button">Все события</button>
-              <button id="openArchive" class="hero-archive-button" type="button">Архив</button>
               <button id="openSubmissionForm" class="hero-submit-button" type="button">Подать событие</button>
+              <div class="hero-filter-actions" aria-label="Быстрые фильтры событий">
+                <button id="openWeekPoster" class="hero-period-button" type="button">Афиша недели</button>
+                <button id="openAllEvents" class="hero-period-button secondary-outline-button" type="button">Все события</button>
+                <button id="openMonthPoster" class="hero-period-button secondary-outline-button" type="button">Афиша месяца</button>
+                <button id="openArchive" class="hero-archive-button" type="button">Архив</button>
+              </div>
             </div>
             <span id="visibleCount" class="sr-only">0</span>
           </div>
+          <figure class="hero-visual">
+            <img src="./assets/hero-moscow-longevity.png" alt="Иллюстрация проекта Московское долголетие" />
+          </figure>
         </section>
 
         <section class="quick-strip">
@@ -143,16 +159,6 @@
               </div>
             </div>
             <div class="cards-grid" id="eventGrid"></div>
-          </section>
-
-          <section class="panel panel-side">
-            <div class="section-head">
-              <div>
-                <p class="eyebrow">Календарь недели</p>
-                <h3>Ближайшие даты</h3>
-              </div>
-            </div>
-            <div class="calendar-list" id="calendarList"></div>
           </section>
         </section>
 
@@ -192,8 +198,13 @@
         <form id="submissionForm" class="submission-form">
           <div class="form-grid">
             <label class="form-field">
-              <span>Дата и время <strong class="required-mark">*</strong></span>
+              <span>Дата и время начала <strong class="required-mark">*</strong></span>
               <input id="eventDateInput" name="eventDate" type="datetime-local" required />
+            </label>
+
+            <label class="form-field">
+              <span>Дата и время окончания</span>
+              <input id="eventEndDateInput" name="eventEndDate" type="datetime-local" />
             </label>
 
             <label class="form-field">
@@ -206,14 +217,27 @@
               <input id="eventVenueInput" name="eventVenue" type="text" maxlength="140" required />
             </label>
 
-            <label class="form-field">
+            <div class="form-field">
               <span>Район <strong class="required-mark">*</strong></span>
-              <input id="eventDistrictInput" name="eventDistrict" type="text" maxlength="80" required />
-            </label>
+              <div id="eventDistrictInput" class="choice-grid compact-choice-grid" role="group" aria-label="Район события">
+                <label><input type="checkbox" value="ЦАО" /> ЦАО</label>
+                <label><input type="checkbox" value="САО" /> САО</label>
+                <label><input type="checkbox" value="СВАО" /> СВАО</label>
+                <label><input type="checkbox" value="ВАО" /> ВАО</label>
+                <label><input type="checkbox" value="ЮВАО" /> ЮВАО</label>
+                <label><input type="checkbox" value="ЮАО" /> ЮАО</label>
+                <label><input type="checkbox" value="ЮЗАО" /> ЮЗАО</label>
+                <label><input type="checkbox" value="ЗАО" /> ЗАО</label>
+                <label><input type="checkbox" value="СЗАО" /> СЗАО</label>
+                <label><input type="checkbox" value="ТиНАО" /> ТиНАО</label>
+                <label><input type="checkbox" value="Зеленоград" /> Зеленоград</label>
+                <label><input type="checkbox" value="Все районы" /> Все районы</label>
+              </div>
+            </div>
 
             <label class="form-field">
               <span>Формат</span>
-              <div id="eventFormatInput" class="choice-grid" role="group" aria-label="Формат события">
+              <div id="eventFormatInput" class="choice-grid compact-choice-grid" role="group" aria-label="Формат события">
                 <label><input type="checkbox" value="Лекция" /> Лекция</label>
                 <label><input type="checkbox" value="Мастер-класс" /> Мастер-класс</label>
                 <label><input type="checkbox" value="Практикум" /> Практикум</label>
@@ -225,7 +249,7 @@
 
             <label class="form-field">
               <span>Для кого</span>
-              <div id="eventAudienceInput" class="choice-grid" role="group" aria-label="Аудитория события">
+              <div id="eventAudienceInput" class="choice-grid compact-choice-grid" role="group" aria-label="Аудитория события">
                 <label><input type="checkbox" value="Участники 55+" /> Участники 55+</label>
                 <label><input type="checkbox" value="Семьи" /> Семьи</label>
                 <label><input type="checkbox" value="Сотрудники" /> Сотрудники</label>

@@ -625,6 +625,7 @@ const tagCloud = document.querySelector("#tagCloud");
 const toggleTagsButton = document.querySelector("#toggleTags");
 const dashboardGrid = document.querySelector(".dashboard-grid");
 const eventDateInput = document.querySelector("#eventDateInput");
+const eventEndDateInput = document.querySelector("#eventEndDateInput");
 const eventTitleInput = document.querySelector("#eventTitleInput");
 const eventVenueInput = document.querySelector("#eventVenueInput");
 const eventDistrictInput = document.querySelector("#eventDistrictInput");
@@ -672,6 +673,7 @@ const state = {
   tagsExpanded: false,
   todayIndex: 0,
   tomorrowIndex: 0,
+  calendarMonth: getMonthKey(new Date()),
   sortMode: "date",
   period: "all",
   activeId: events[0].id,
@@ -729,6 +731,21 @@ function setFilterSelections(filterElement, selectedValues) {
   });
 }
 
+function getDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getMonthKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+
+  return `${year}-${month}`;
+}
+
 function getEventDateOnly(eventItem) {
   const eventDate = new Date(eventItem.isoDate);
 
@@ -736,11 +753,30 @@ function getEventDateOnly(eventItem) {
     return "";
   }
 
-  const year = eventDate.getFullYear();
-  const month = String(eventDate.getMonth() + 1).padStart(2, "0");
-  const day = String(eventDate.getDate()).padStart(2, "0");
+  return getDateKey(eventDate);
+}
 
-  return `${year}-${month}-${day}`;
+function getEventDateKeys(eventItem) {
+  const startDate = new Date(eventItem.isoDate);
+
+  if (Number.isNaN(startDate.getTime())) {
+    return [];
+  }
+
+  const endDate = eventItem.endIsoDate ? new Date(eventItem.endIsoDate) : startDate;
+  const safeEndDate = Number.isNaN(endDate.getTime()) || endDate < startDate ? startDate : endDate;
+  const currentDate = new Date(startDate);
+  const keys = [];
+
+  currentDate.setHours(0, 0, 0, 0);
+  safeEndDate.setHours(0, 0, 0, 0);
+
+  while (currentDate <= safeEndDate && keys.length < 370) {
+    keys.push(getDateKey(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return keys;
 }
 
 function escapeAttribute(value) {
@@ -769,7 +805,7 @@ function buildGeneratedPosterImageUrl(eventItem) {
     width: "768",
     height: "1024",
     nologo: "true",
-    seed: String(getStableImageSeed(eventItem.id))
+    seed: String(getStableImageSeed(`${eventItem.id}-${eventItem.imageRevision || ""}-${eventItem.imagePrompt || ""}`))
   });
 
   return `https://image.pollinations.ai/prompt/${encodeURIComponent(visualPrompt)}?${params.toString()}`;
@@ -834,6 +870,29 @@ function formatCalendarWeekday(date) {
   return new Intl.DateTimeFormat("ru-RU", {
     weekday: "short"
   }).format(date);
+}
+
+function formatCalendarMonth(date) {
+  return new Intl.DateTimeFormat("ru-RU", {
+    month: "long",
+    year: "numeric"
+  }).format(date);
+}
+
+function getCalendarMonthDate() {
+  const [year, month] = state.calendarMonth.split("-").map(Number);
+
+  if (!year || !month) {
+    return new Date();
+  }
+
+  return new Date(year, month - 1, 1);
+}
+
+function shiftCalendarMonth(monthOffset) {
+  const nextMonth = getCalendarMonthDate();
+  nextMonth.setMonth(nextMonth.getMonth() + monthOffset);
+  state.calendarMonth = getMonthKey(nextMonth);
 }
 
 function getCalendarWeekStart(filteredEvents) {
@@ -1042,7 +1101,7 @@ function renderFilterGroup(filterElement, values, selectedValues) {
 function populateFilters() {
   renderFilterGroup(formatFilter, uniq(events.flatMap((event) => parseMultiValue(event.format))), state.format);
   renderFilterGroup(audienceFilter, uniq(events.flatMap((event) => parseMultiValue(event.audience))), state.audience);
-  renderFilterGroup(districtFilter, uniq(events.map((event) => event.district)), state.district);
+  renderFilterGroup(districtFilter, uniq(events.flatMap((event) => parseMultiValue(event.district))), state.district);
 }
 
 function renderTags() {
@@ -1083,7 +1142,7 @@ function matchesFilters(event) {
   return (
     valuesMatchAny(event.format, state.format) &&
     valuesMatchAny(event.audience, state.audience) &&
-    (!state.district.length || state.district.includes(event.district)) &&
+    valuesMatchAny(event.district, state.district) &&
     (!state.tags.length || state.tags.some((tag) => event.tags.includes(tag))) &&
     (!query || haystack.includes(query)) &&
     matchesDateFilter(event) &&
@@ -1152,48 +1211,110 @@ function renderCards(filteredEvents) {
 }
 
 function renderCalendar(filteredEvents) {
-  const start = getCalendarWeekStart(filteredEvents);
-  const days = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(start);
-    date.setDate(start.getDate() + index);
+  const monthDate = getCalendarMonthDate();
+  const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const gridStart = new Date(firstDay);
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  const todayKey = getTodayDateKey();
+  const monthKey = getMonthKey(monthDate);
+  const eventsByDate = new Map();
+
+  gridStart.setDate(firstDay.getDate() - mondayOffset);
+
+  filteredEvents
+    .filter((eventItem) => eventItem.format !== "Сервис")
+    .forEach((eventItem) => {
+      getEventDateKeys(eventItem).forEach((dateKey) => {
+        if (!eventsByDate.has(dateKey)) {
+          eventsByDate.set(dateKey, []);
+        }
+
+        eventsByDate.get(dateKey).push(eventItem);
+      });
+    });
+
+  eventsByDate.forEach((dayEvents) => {
+    dayEvents.sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+  });
+
+  const days = Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(gridStart);
+    date.setDate(gridStart.getDate() + index);
     return date;
   });
 
-  calendarList.innerHTML = days
-    .map((date) => {
-      const dateKey = getEventDateOnly({ isoDate: date.toISOString() });
-      const dayEvents = filteredEvents
-        .filter((eventItem) => eventItem.format !== "Сервис" && getEventDateOnly(eventItem) === dateKey)
-        .sort((left, right) => new Date(left.isoDate) - new Date(right.isoDate));
+  calendarList.innerHTML = `
+    <div class="calendar-toolbar">
+      <button class="calendar-nav-button" type="button" data-calendar-nav="-1" aria-label="Предыдущий месяц">‹</button>
+      <label class="calendar-month-picker">
+        <span>${formatCalendarMonth(monthDate)}</span>
+        <input id="calendarMonthInput" type="month" value="${state.calendarMonth}" aria-label="Выбрать месяц календаря" />
+      </label>
+      <button class="calendar-nav-button" type="button" data-calendar-nav="1" aria-label="Следующий месяц">›</button>
+    </div>
+    <div class="calendar-weekdays" aria-hidden="true">
+      <span>Пн</span>
+      <span>Вт</span>
+      <span>Ср</span>
+      <span>Чт</span>
+      <span>Пт</span>
+      <span>Сб</span>
+      <span>Вс</span>
+    </div>
+    <div class="calendar-month-grid">
+      ${days
+        .map((date) => {
+          const dateKey = getDateKey(date);
+          const dayEvents = eventsByDate.get(dateKey) || [];
+          const firstEvent = dayEvents[0];
+          const isOutsideMonth = getMonthKey(date) !== monthKey;
+          const dayClasses = [
+            "calendar-date",
+            dayEvents.length ? "has-events" : "",
+            isOutsideMonth ? "is-outside-month" : "",
+            dateKey === todayKey ? "is-today" : ""
+          ]
+            .filter(Boolean)
+            .join(" ");
 
-      return `
-        <article class="calendar-day${dayEvents.length ? " has-events" : ""}">
-          <div class="calendar-day-head">
-            <span>${formatCalendarWeekday(date)}</span>
-            <strong>${formatCalendarDay(date)}</strong>
-          </div>
-          <div class="calendar-day-events">
-            ${
-              dayEvents.length
-                ? dayEvents
-                    .map(
-                      (eventItem) => `
-                        <button class="calendar-event" data-event-id="${eventItem.id}" type="button">
-                          <span>${eventItem.date.split(", ").at(-1) || eventItem.date}</span>
-                          ${eventItem.title}
-                        </button>
-                      `
-                    )
-                    .join("")
-                : `<p class="calendar-empty">Нет событий</p>`
-            }
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+          return `
+            <button
+              class="${dayClasses}"
+              type="button"
+              ${firstEvent ? `data-event-id="${firstEvent.id}"` : "disabled"}
+              data-date-key="${dateKey}"
+              aria-label="${dayEvents.length ? `Открыть событие ${escapeAttribute(firstEvent.title)}` : "Событий нет"}"
+            >
+              <span class="calendar-date-number">${date.getDate()}</span>
+              ${
+                dayEvents.length
+                  ? `
+                    <span class="calendar-date-dot"></span>
+                    <span class="calendar-date-title">${firstEvent.title}</span>
+                    ${dayEvents.length > 1 ? `<span class="calendar-date-count">+${dayEvents.length - 1}</span>` : ""}
+                  `
+                  : ""
+              }
+            </button>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
 
-  calendarList.querySelectorAll(".calendar-event").forEach((item) => {
+  calendarList.querySelectorAll("[data-calendar-nav]").forEach((button) => {
+    button.addEventListener("click", () => {
+      shiftCalendarMonth(Number(button.dataset.calendarNav));
+      render();
+    });
+  });
+
+  calendarList.querySelector("#calendarMonthInput")?.addEventListener("change", (event) => {
+    state.calendarMonth = event.target.value || getMonthKey(new Date());
+    render();
+  });
+
+  calendarList.querySelectorAll(".calendar-date.has-events").forEach((item) => {
     const { eventId } = item.dataset;
 
     item.addEventListener("click", () => {
@@ -1329,18 +1450,30 @@ function renderTomorrowCard() {
 function renderPosterCard(eventItem) {
   return `
     <article class="poster-card">
-      <button
-        class="poster-hero"
-        type="button"
-        data-action="open-image-preview"
-        data-image-src="${escapeAttribute(buildGeneratedPosterImageUrl(eventItem))}"
-        data-image-alt="Полное изображение события ${escapeAttribute(eventItem.title)}"
-        aria-label="Открыть полное изображение события"
-      >
-        ${renderGeneratedPosterImage(eventItem)}
+      <div class="poster-hero">
+        <button
+          class="poster-image-open"
+          type="button"
+          data-action="open-image-preview"
+          data-image-src="${escapeAttribute(buildGeneratedPosterImageUrl(eventItem))}"
+          data-image-alt="Полное изображение события ${escapeAttribute(eventItem.title)}"
+          aria-label="Открыть полное изображение события"
+        >
+          ${renderGeneratedPosterImage(eventItem)}
+        </button>
+        <button
+          class="poster-edit-image-button"
+          type="button"
+          data-action="edit-event-image"
+          data-event-id="${eventItem.id}"
+          aria-label="Изменить картинку по ключевым словам"
+          title="Изменить картинку"
+        >
+          ✎
+        </button>
         <span class="poster-badge">Московское долголетие</span>
         <span class="poster-format">${formatMultiValue(eventItem.format)}</span>
-      </button>
+      </div>
       <div class="poster-content">
         <p class="poster-date">${eventItem.date}</p>
         <h4 class="poster-title">${eventItem.title}</h4>
@@ -1388,6 +1521,34 @@ function renderReportGallery(reportPhotos = [], emptyText = "Превью фот
   `;
 }
 
+function renderEditableAnnouncement(eventItem) {
+  return `
+    <section class="announcement-editor" data-event-id="${eventItem.id}">
+      <div class="announcement-editor-head">
+        <p class="detail-copy">${eventItem.description}</p>
+        <button
+          class="text-edit-button"
+          type="button"
+          data-action="edit-announcement-text"
+          data-event-id="${eventItem.id}"
+        >
+          Редактировать текст
+        </button>
+      </div>
+      <form class="announcement-edit-form" data-action="save-announcement-text" data-event-id="${eventItem.id}" hidden>
+        <label class="form-field">
+          <span>Текст анонса</span>
+          <textarea name="announcementText" rows="7">${eventItem.description}</textarea>
+        </label>
+        <div class="announcement-edit-actions">
+          <button class="ghost-dark-button" type="button" data-action="cancel-announcement-text">Отмена</button>
+          <button class="primary-button" type="submit">Сохранить текст</button>
+        </div>
+      </form>
+    </section>
+  `;
+}
+
 function renderDetail(filteredEvents) {
   const current =
     filteredEvents.find((event) => event.id === state.activeId) || filteredEvents[0] || events[0];
@@ -1406,7 +1567,7 @@ function renderDetail(filteredEvents) {
       <span class="detail-chip">${current.district}</span>
     </div>
     <h3>${current.title}</h3>
-    <p class="detail-copy">${current.description}</p>
+    ${renderEditableAnnouncement(current)}
 
     <div class="detail-box detail-box-poster">
       <h4>Карточка события</h4>
@@ -1470,7 +1631,7 @@ function renderEventModal() {
       <span class="detail-chip">${current.district}</span>
     </div>
 
-    <p class="detail-copy">${current.description}</p>
+    ${renderEditableAnnouncement(current)}
 
     <div class="detail-box detail-box-poster">
       <h4>Карточка события</h4>
@@ -1607,6 +1768,36 @@ function formatHumanDate(datetimeValue) {
   }).format(date);
 }
 
+function formatHumanDateRange(startValue, endValue) {
+  if (!endValue) {
+    return formatHumanDate(startValue);
+  }
+
+  const startDate = new Date(startValue);
+  const endDate = new Date(endValue);
+
+  if (Number.isNaN(endDate.getTime())) {
+    return formatHumanDate(startValue);
+  }
+
+  const sameDay = startDate.toDateString() === endDate.toDateString();
+
+  if (sameDay) {
+    const dateLabel = new Intl.DateTimeFormat("ru-RU", {
+      day: "numeric",
+      month: "long"
+    }).format(startDate);
+    const timeFormatter = new Intl.DateTimeFormat("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    return `${dateLabel}, ${timeFormatter.format(startDate)}-${timeFormatter.format(endDate)}`;
+  }
+
+  return `${formatHumanDate(startValue)} - ${formatHumanDate(endValue)}`;
+}
+
 function splitKeywords(input) {
   return input
     .split(/[,\n;]+/)
@@ -1688,20 +1879,116 @@ function getFormatLead(format) {
   return formatMap[primaryFormat] || "событие, в котором сочетаются польза, атмосфера и участие";
 }
 
-function buildAnnouncement(title, keywords, audience, format, date, venue, registration) {
+function pickVariant(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function getRegistrationLine(registration) {
+  return registration && registration !== "Ссылка будет добавлена инициатором"
+    ? `Подробности и запись: ${registration}.`
+    : "Участие можно уточнить у организатора или на площадке.";
+}
+
+function normalizeAnnouncementText(text) {
+  const cleanedText = String(text || "")
+    .replace(/\r/g, "")
+    .replace(/^\s*(анонс|текст анонса)\s*:\s*/i, "");
+  const paragraphSource = cleanedText.split(/\n{2,}/).length >= 3 ? cleanedText.split(/\n{2,}/) : cleanedText.split(/\n+/);
+  const paragraphs = paragraphSource
+    .map((paragraph) =>
+      paragraph
+        .replace(/^\s*[-*•\d.)]+\s*/, "")
+        .replace(/\s+/g, " ")
+        .trim()
+    )
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return paragraphs.length === 3 ? paragraphs.join("\n\n") : "";
+}
+
+function buildAnnouncementPrompt({ title, keywords, audience, format, date, venue, district, registration }) {
+  const keywordLine = keywords.length ? keywords.join(", ") : "ключевые слова не указаны";
+
+  return [
+    'Ты — экспертный копирайтер и event-менеджер проекта "Московское долголетие".',
+    "Напиши продающий, литературный и уважительный анонс мероприятия на русском языке.",
+    "Требования: 3 коротких абзаца, без канцелярита, без повторов одних и тех же слов, грамотная орфография, пунктуация, корректные предлоги и окончания.",
+    "Обязательно естественно встрои название, дату, место, район, формат, аудиторию и ключевые слова. Не придумывай факты, которых нет во вводных.",
+    "В конце добавь мягкий призыв к действию. Не добавляй заголовки, списки, markdown и image prompt.",
+    `Название: ${title}`,
+    `Дата и время: ${date}`,
+    `Место: ${venue}`,
+    `Район: ${district}`,
+    `Формат: ${format}`,
+    `Аудитория: ${audience}`,
+    `Ключевые слова сотрудника: ${keywordLine}`,
+    `Участие: ${registration}`
+  ].join("\n");
+}
+
+async function fetchAiAnnouncement(context) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 7000);
+  const prompt = buildAnnouncementPrompt(context);
+  const params = new URLSearchParams({
+    model: "openai",
+    seed: String(Date.now())
+  });
+  const url = `https://gen.pollinations.ai/text/${encodeURIComponent(prompt)}?${params.toString()}`;
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        Accept: "text/plain"
+      }
+    });
+
+    if (!response.ok) {
+      return "";
+    }
+
+    const text = await response.text();
+    return normalizeAnnouncementText(text);
+  } catch (error) {
+    return "";
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function buildLocalAnnouncement({ title, keywords, audience, format, date, venue, district, registration }) {
   const audiencePhrase = getAudiencePhrase(audience);
   const topicPhrase = getTopicPhrase(keywords, format);
   const formatLead = getFormatLead(format);
-  const registrationLine =
-    registration && registration !== "Ссылка будет добавлена инициатором"
-      ? `Подробности и запись: ${registration}.`
-      : "Участие можно уточнить у организатора или на площадке.";
+  const registrationLine = getRegistrationLine(registration);
+  const keywordAccent = keywords.length
+    ? `В основе программы — ${joinKeywordsForSentence(keywords)}, поэтому встреча получится предметной и близкой к реальным интересам гостей.`
+    : "Программа построена так, чтобы каждый участник быстро понял смысл встречи и почувствовал себя вовлечённым.";
+  const opening = pickVariant([
+    `${title} — ${topicPhrase} для ${audiencePhrase}. Это ${formatLead}, где важны не формальности, а польза, настроение и живое участие.`,
+    `Приглашаем на «${title}»: ${topicPhrase}, созданное для ${audiencePhrase}. Встреча пройдёт в спокойном темпе, с ясной подачей и вниманием к деталям.`,
+    `«${title}» поможет провести время содержательно и с удовольствием. Формат события — ${formatMultiValue(format).toLowerCase() || "встреча"} для ${audiencePhrase}, без лишней официальности и с понятной программой.`
+  ]);
+  const details = pickVariant([
+    `${capitalizeFirst(date)}. Место встречи — ${venue}, район: ${district}. ${keywordAccent}`,
+    `Дата и время: ${date}. Площадка: ${venue}; район проведения — ${district}. ${keywordAccent}`,
+    `Встреча состоится ${date}. Гостей ждут по адресу: ${venue}; район — ${district}. ${keywordAccent}`
+  ]);
+  const callToAction = pickVariant([
+    `Приходите за новыми впечатлениями, доброжелательным общением и ощущением, что день прошёл не зря. ${registrationLine}`,
+    `Если хочется выбраться из рутины, познакомиться с интересными людьми и получить тёплый заряд энергии, это событие стоит добавить в планы. ${registrationLine}`,
+    `Будем рады видеть вас среди гостей: приходите сами и приглашайте тех, кому близки активность, забота и городские встречи со смыслом. ${registrationLine}`
+  ]);
 
-  return [
-    `${title} — ${topicPhrase} для ${audiencePhrase}. Это ${formatLead}: с деликатным тоном, ясной подачей и вниманием к тому, чтобы каждому было комфортно включиться с первых минут.`,
-    `${capitalizeFirst(date)} встречаемся в ${venue}. Гостей ждут продуманная программа, тёплая атмосфера и естественное общение без лишней официальности — именно то, ради чего хочется выбраться из рутины и провести время со смыслом.`,
-    `Если вам близки новые впечатления, доброжелательная среда и события, после которых остаётся хорошее послевкусие, обязательно приходите. ${registrationLine}`
-  ].join("\n\n");
+  return [opening, details, callToAction].join("\n\n");
+}
+
+async function buildAnnouncement(context) {
+  const aiAnnouncement = await fetchAiAnnouncement(context);
+
+  return aiAnnouncement || buildLocalAnnouncement(context);
 }
 
 function buildImagePrompt(title, keywords, format, audience) {
@@ -1710,6 +1997,14 @@ function buildImagePrompt(title, keywords, format, audience) {
   const keywordPrompt = keywords.length ? keywords.join(", ") : "community, care, inspiration";
 
   return `Create a minimalist vertical event poster for "Moscow Longevity". Theme: ${title}. Format: ${formatLabel}. Audience: ${audienceLabel}. Include visual cues inspired by ${keywordPrompt}. Style: warm, caring, respectful, modern civic design, clean composition, large title area, no clutter, no noise. Palette: emerald, turquoise, ruby, red and white. Typography feeling: Circe Bold / Extra Bold. Abstract or human-centered imagery, elegant shapes, soft light. Output: PNG poster, 1080x1920.`;
+}
+
+function buildImagePromptFromVisualKeywords(eventItem, keywords) {
+  const visualKeywords = keywords.trim();
+  const formatLabel = formatMultiValue(eventItem.format) || "Событие";
+  const audienceLabel = formatMultiValue(eventItem.audience) || "Смешанная";
+
+  return `Create a minimalist vertical event poster for "Moscow Longevity". Theme: ${eventItem.title}. Format: ${formatLabel}. Audience: ${audienceLabel}. Main visual cues: ${visualKeywords}. Style: warm, caring, respectful, modern civic design, clean composition, large title area, no clutter, no noise, no readable text, no letters, no logos. Palette: emerald, turquoise, ruby, red and white. Typography feeling: Circe Bold / Extra Bold. Abstract or human-centered imagery, elegant shapes, soft light. Output: PNG poster, 1080x1920.`;
 }
 
 function resetSubmissionFormState() {
@@ -1724,9 +2019,17 @@ function populateSubmissionForm(eventItem) {
     .slice(0, 16);
 
   eventDateInput.value = isoLocalValue;
+  if (eventItem.endIsoDate) {
+    const sourceEndDate = new Date(eventItem.endIsoDate);
+    eventEndDateInput.value = new Date(sourceEndDate.getTime() - sourceEndDate.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+  } else {
+    eventEndDateInput.value = "";
+  }
   eventTitleInput.value = eventItem.title || "";
   eventVenueInput.value = eventItem.venue || "";
-  eventDistrictInput.value = eventItem.district || "";
+  setSelectedValues(eventDistrictInput, eventItem.district);
   setSelectedValues(eventFormatInput, eventItem.format);
   setSelectedValues(eventAudienceInput, eventItem.audience);
   eventDescriptionInput.value = getEventKeywords(eventItem);
@@ -2020,6 +2323,88 @@ function completeEvent(eventId) {
   }
 }
 
+function editEventImage(eventId) {
+  const current = getEventById(eventId);
+
+  if (!current) {
+    return;
+  }
+
+  const currentKeywords = getEventKeywords(current);
+  const keywords = window.prompt(
+    "Введите ключевые слова для новой картинки. Например: лекция, здоровье, танцы, тёплая встреча",
+    current.visualKeywords || currentKeywords
+  );
+
+  if (keywords === null) {
+    return;
+  }
+
+  const normalizedKeywords = keywords.trim();
+
+  if (!normalizedKeywords) {
+    return;
+  }
+
+  current.visualKeywords = normalizedKeywords;
+  current.imagePrompt = buildImagePromptFromVisualKeywords(current, normalizedKeywords);
+  current.imageRevision = Date.now();
+  saveEvents();
+  render();
+
+  if (!eventModal.hidden) {
+    renderEventModal();
+  }
+}
+
+function updateAnnouncementSummary(eventItem) {
+  eventItem.summary = String(eventItem.description || "")
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)[0] || eventItem.description || "";
+}
+
+function toggleAnnouncementEditor(rootElement, isEditing) {
+  const editor = rootElement.closest(".announcement-editor");
+
+  if (!editor) {
+    return;
+  }
+
+  const head = editor.querySelector(".announcement-editor-head");
+  const form = editor.querySelector(".announcement-edit-form");
+
+  if (head) {
+    head.hidden = isEditing;
+  }
+
+  if (form) {
+    form.hidden = !isEditing;
+    form.querySelector("textarea")?.focus();
+  }
+}
+
+function saveAnnouncementText(event) {
+  const form = event.target;
+  const eventId = form.dataset.eventId;
+  const current = getEventById(eventId);
+  const textarea = form.elements.announcementText;
+  const nextText = textarea.value.trim();
+
+  if (!current || !nextText) {
+    return;
+  }
+
+  current.description = nextText;
+  updateAnnouncementSummary(current);
+  saveEvents();
+  render();
+
+  if (!eventModal.hidden) {
+    renderEventModal();
+  }
+}
+
 function toggleReportPanel() {
   const reportPanel = document.querySelector("#reportPanel");
 
@@ -2091,13 +2476,15 @@ async function saveEventReport(event) {
   }
 }
 
-function createAnnouncementFromForm(event) {
+async function createAnnouncementFromForm(event) {
   event.preventDefault();
 
   const title = eventTitleInput.value.trim();
   const dateValue = eventDateInput.value;
+  const endDateValue = eventEndDateInput.value;
   const venue = eventVenueInput.value.trim();
-  const district = eventDistrictInput.value.trim();
+  const districtValues = getSelectedValues(eventDistrictInput);
+  const district = districtValues.join(", ");
   const formatValues = getSelectedValues(eventFormatInput);
   const audienceValues = getSelectedValues(eventAudienceInput);
   const format = formatValues.length ? formatValues.join(", ") : "Событие";
@@ -2111,30 +2498,45 @@ function createAnnouncementFromForm(event) {
     return;
   }
 
-  const humanDate = formatHumanDate(dateValue);
+  if (endDateValue && new Date(endDateValue) < new Date(dateValue)) {
+    formStatus.textContent = "Дата окончания не может быть раньше даты начала.";
+    return;
+  }
+
+  formStatus.textContent = "Генерируем литературный анонс по вашим вводным...";
+  submitSubmissionButton.disabled = true;
+
+  const humanDate = formatHumanDateRange(dateValue, endDateValue);
   const keywords = splitKeywords(keywordsInput);
-  const announcement = buildAnnouncement(
+  const announcement = await buildAnnouncement({
     title,
     keywords,
     audience,
     format,
-    humanDate,
+    date: humanDate,
     venue,
+    district,
     registration
-  );
+  });
   const imagePrompt = buildImagePrompt(title, keywords, format, audience);
   const isoDate = new Date(dateValue).toISOString();
+  const endIsoDate = endDateValue ? new Date(endDateValue).toISOString() : "";
   const eventPayload = {
     title,
     date: humanDate,
     isoDate,
+    endIsoDate,
     venue,
     district,
     format,
     audience,
     summary: announcement.split("\n\n")[0],
     description: announcement,
-    tags: [format.toLowerCase(), district.toLowerCase(), ...keywords.map((item) => item.toLowerCase())]
+    tags: [
+      ...formatValues.map((item) => item.toLowerCase()),
+      ...districtValues.map((item) => item.toLowerCase()),
+      ...keywords.map((item) => item.toLowerCase())
+    ]
       .filter(Boolean)
       .slice(0, 5),
     status: "Опубликовано",
@@ -2186,6 +2588,7 @@ function createAnnouncementFromForm(event) {
   state.editingId = null;
   document.querySelector("#submissionTitle").textContent = "Подать событие в портал";
   submitSubmissionButton.textContent = "Подать событие";
+  submitSubmissionButton.disabled = false;
   closeModal();
   render();
   openEventModal(currentEventId);
@@ -2323,9 +2726,27 @@ eventModalBody.addEventListener("click", (event) => {
   const completeButton = event.target.closest('[data-action="complete-event"]');
   const reportButton = event.target.closest('[data-action="toggle-report"]');
   const imagePreviewButton = event.target.closest('[data-action="open-image-preview"]');
+  const editImageButton = event.target.closest('[data-action="edit-event-image"]');
+  const editTextButton = event.target.closest('[data-action="edit-announcement-text"]');
+  const cancelTextButton = event.target.closest('[data-action="cancel-announcement-text"]');
 
   if (imagePreviewButton) {
     openImagePreview(imagePreviewButton.dataset.imageSrc, imagePreviewButton.dataset.imageAlt);
+    return;
+  }
+
+  if (editTextButton) {
+    toggleAnnouncementEditor(editTextButton, true);
+    return;
+  }
+
+  if (cancelTextButton) {
+    toggleAnnouncementEditor(cancelTextButton, false);
+    return;
+  }
+
+  if (editImageButton) {
+    editEventImage(editImageButton.dataset.eventId);
     return;
   }
 
@@ -2353,9 +2774,27 @@ detailPanel.addEventListener("click", (event) => {
   const exportButton = event.target.closest('[data-action="export-event"]');
   const completeButton = event.target.closest('[data-action="complete-event"]');
   const imagePreviewButton = event.target.closest('[data-action="open-image-preview"]');
+  const editImageButton = event.target.closest('[data-action="edit-event-image"]');
+  const editTextButton = event.target.closest('[data-action="edit-announcement-text"]');
+  const cancelTextButton = event.target.closest('[data-action="cancel-announcement-text"]');
 
   if (imagePreviewButton) {
     openImagePreview(imagePreviewButton.dataset.imageSrc, imagePreviewButton.dataset.imageAlt);
+    return;
+  }
+
+  if (editTextButton) {
+    toggleAnnouncementEditor(editTextButton, true);
+    return;
+  }
+
+  if (cancelTextButton) {
+    toggleAnnouncementEditor(cancelTextButton, false);
+    return;
+  }
+
+  if (editImageButton) {
+    editEventImage(editImageButton.dataset.eventId);
     return;
   }
 
@@ -2370,6 +2809,15 @@ detailPanel.addEventListener("click", (event) => {
 eventModalBody.addEventListener("submit", (event) => {
   if (event.target.id === "reportForm") {
     saveEventReport(event);
+  } else if (event.target.dataset.action === "save-announcement-text") {
+    event.preventDefault();
+    saveAnnouncementText(event);
+  }
+});
+detailPanel.addEventListener("submit", (event) => {
+  if (event.target.dataset.action === "save-announcement-text") {
+    event.preventDefault();
+    saveAnnouncementText(event);
   }
 });
 eventModalBody.addEventListener("change", (event) => {
